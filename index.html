@@ -1,452 +1,279 @@
 <!DOCTYPE html>
-
 <html lang="vi">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>💌 Thư Mời Gặp Mặt</title>
-
-```
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-    rel="stylesheet">
-
-<style>
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        font-family: 'Poppins', sans-serif;
-    }
-
-    html {
-        scroll-behavior: smooth;
-    }
-
-    body {
-        overflow-x: hidden;
-        background: #fff7fa;
-    }
-
-    section {
-        min-height: 100vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 40px;
-        position: relative;
-    }
-
-    /* ================= HEART ================= */
-
-    .heart {
-        position: fixed;
-        bottom: -50px;
-        color: #ff75a0;
-        animation: fly 10s linear infinite;
-        opacity: .3;
-        z-index: 0;
-        pointer-events: none;
-    }
-
-    @keyframes fly {
-        from {
-            transform: translateY(0);
+    <title>Lời Mời Gặp Mặt Lần Đầu</title>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
-        to {
-            transform: translateY(-120vh);
+        body {
+            background-color: #f5efe6;
+            font-family: 'Quicksand', sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
         }
-    }
 
-    /* ================= ENVELOPE ================= */
-
-    .hero {
-        background: linear-gradient(135deg, #ffd7e4, #fff3f7);
-    }
-
-    .envelope-wrapper {
-        text-align: center;
-        z-index: 2;
-    }
-
-    .envelope {
-        width: 340px;
-        height: 230px;
-        position: relative;
-        margin: auto;
-    }
-
-    .envelope::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background: #ff76a7;
-        border-radius: 0 0 15px 15px;
-    }
-
-    .flap {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        background: #ff4f8d;
-        clip-path: polygon(0 0, 50% 60%, 100% 0);
-        transform-origin: top;
-        transition: 1.2s;
-        z-index: 5;
-    }
-
-    .letter {
-        position: absolute;
-        width: 90%;
-        left: 5%;
-        height: 190px;
-        top: 15px;
-        background: white;
-        border-radius: 12px;
-        padding: 20px;
-        box-shadow: 0 15px 40px rgba(0, 0, 0, .15);
-        transition: 1.2s;
-    }
-
-    .letter h2 {
-        color: #ff4f8d;
-        margin-bottom: 10px;
-    }
-
-    .letter p {
-        color: #555;
-        line-height: 1.7;
-    }
-
-    .envelope.open .flap {
-        transform: rotateX(180deg);
-    }
-
-    .envelope.open .letter {
-        transform: translateY(-140px);
-    }
-
-    .open-btn {
-        margin-top: 45px;
-        padding: 14px 35px;
-        border: none;
-        border-radius: 40px;
-        background: #ff4f8d;
-        color: white;
-        cursor: pointer;
-        font-size: 16px;
-        font-weight: 600;
-        transition: .3s;
-    }
-
-    .open-btn:hover {
-        transform: scale(1.05);
-    }
-
-    /* ================= CONTENT ================= */
-
-    .hidden {
-        opacity: 0;
-        transform: translateY(80px);
-        transition: all 1.2s ease;
-    }
-
-    .show {
-        opacity: 1;
-        transform: translateY(0);
-    }
-
-    .card {
-        max-width: 1100px;
-        display: flex;
-        gap: 60px;
-        align-items: center;
-        flex-wrap: wrap;
-    }
-
-    .reverse {
-        flex-direction: row-reverse;
-    }
-
-    .card img {
-        width: 380px;
-        max-width: 100%;
-        border-radius: 24px;
-        box-shadow: 0 20px 50px rgba(0, 0, 0, .15);
-        transition: .4s;
-    }
-
-    .card img:hover {
-        transform: scale(1.03);
-    }
-
-    .text {
-        flex: 1;
-    }
-
-    .text h2 {
-        font-size: 2.4rem;
-        color: #ff4f8d;
-        margin-bottom: 20px;
-    }
-
-    .text p {
-        font-size: 1.1rem;
-        line-height: 1.8;
-        color: #555;
-    }
-
-    .final {
-        text-align: center;
-        background: linear-gradient(135deg, #ffe8ef, white);
-    }
-
-    .final h2 {
-        font-size: 3rem;
-        color: #ff4f8d;
-        margin-bottom: 20px;
-    }
-
-    .final p {
-        color: #666;
-        font-size: 1.2rem;
-        margin-bottom: 30px;
-    }
-
-    .zalo-btn {
-        display: inline-block;
-        text-decoration: none;
-        background: #0068ff;
-        color: white;
-        padding: 16px 40px;
-        border-radius: 50px;
-        font-weight: 600;
-        transition: .3s;
-    }
-
-    .zalo-btn:hover {
-        transform: scale(1.08);
-    }
-
-    .fade-out {
-        animation: fadeOut 1s forwards;
-    }
-
-    @keyframes fadeOut {
-        to {
-            opacity: 0;
-            transform: scale(1.1);
+        /* Khung lớn chứa bức thư */
+        .letter-container {
+            background: #fffdf9;
+            max-width: 500px;
+            width: 100%;
+            min-height: 650px;
+            padding: 35px 30px;
+            box-shadow: 0 10px 30px rgba(163, 145, 119, 0.25);
+            border-radius: 12px;
+            position: relative;
+            border: 1px solid #eae1d4;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
-    }
 
-    @media(max-width:768px) {
+        /* Các trang thư (mặc định ẩn, chỉ hiện trang có class active) */
+        .page {
+            display: none;
+            animation: fadeIn 0.5s ease forwards;
+        }
 
-        .text {
+        .page.active {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            justify-content: Batween;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Nội dung chữ viết tay */
+        .letter-content {
+            font-family: 'Caveat', cursive;
+            font-size: 26px;
+            line-height: 1.5;
+            color: #4a3f35;
+        }
+
+        .letter-title {
             text-align: center;
+            font-size: 34px;
+            margin-bottom: 20px;
+            color: #8c6239;
+            font-weight: 700;
         }
 
-        .text h2 {
-            font-size: 2rem;
+        .page-number {
+            text-align: center;
+            font-size: 14px;
+            color: #a19177;
+            font-family: 'Quicksand', sans-serif;
+            margin-bottom: 15px;
+            font-weight: bold;
         }
 
-        .final h2 {
-            font-size: 2.2rem;
+        p {
+            margin-bottom: 15px;
+            text-indent: 25px;
         }
 
-        .envelope {
-            width: 300px;
+        /* Khung ảnh phong cách Polaroid */
+        .polaroid {
+            background: #ffffff;
+            padding: 10px 10px 20px 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+            border: 1px solid #eee;
+            width: 90%;
+            margin: 20px auto;
+            transform: rotate(-1deg);
         }
-    }
-</style>
-```
 
+        .polaroid img {
+            width: 100%;
+            height: auto;
+            display: block;
+            object-fit: cover;
+            border-radius: 2px;
+        }
+
+        /* Trang cuối cùng (Thông tin liên lạc) */
+        .contact-page {
+            text-align: center;
+            padding-top: 40px;
+        }
+
+        .contact-title {
+            font-size: 28px;
+            color: #8c6239;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .contact-text {
+            font-size: 18px;
+            color: #61554a;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        /* Nút bấm Zalo */
+        .zalo-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #0084ff, #0066cc);
+            color: white;
+            text-decoration: none;
+            padding: 14px 35px;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 16px;
+            box-shadow: 0 5px 15px rgba(0, 132, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .zalo-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 132, 255, 0.4);
+        }
+
+        /* Thanh điều hướng quay trang ở dưới cùng */
+        .navigation-bar {
+            margin-top: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid #f0e6d6;
+            padding-top: 15px;
+        }
+
+        .nav-btn {
+            background-color: #8c6239;
+            color: white;
+            border: none;
+            padding: 8px 18px;
+            font-family: 'Quicksand', sans-serif;
+            font-size: 14px;
+            font-weight: bold;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .nav-btn:hover {
+            background-color: #6f4e2c;
+        }
+
+        .nav-btn:disabled {
+            background-color: #e0d7cb;
+            color: #a19177;
+            cursor: not-allowed;
+        }
+
+        .heart {
+            color: #cc4444;
+        }
+    </style>
 </head>
-
 <body>
 
-```
-<div class="heart" style="left:10%">❤</div>
-<div class="heart" style="left:25%;animation-delay:2s">❤</div>
-<div class="heart" style="left:45%;animation-delay:4s">❤</div>
-<div class="heart" style="left:65%;animation-delay:1s">❤</div>
-<div class="heart" style="left:85%;animation-delay:3s">❤</div>
-
-<!-- PHONG BÌ -->
-
-<section class="hero" id="envelope-page">
-
-    <div class="envelope-wrapper">
-
-        <div class="envelope" id="envelope">
-
-            <div class="letter">
-
-                <h2>💌 Thư Mời Đặc Biệt</h2>
-
-                <p>
-                    Xin chào ✨
-                    <br><br>
-                    Có một lời mời nhỏ dành riêng cho bạn.
-                    Hãy mở bức thư này để bắt đầu một cuộc gặp gỡ thật dễ thương nhé ❤️
-                </p>
-
+    <div class="letter-container">
+        
+        <div class="page active" id="page-1">
+            <div class="page-number">Trang 1 / 4</div>
+            <div class="letter-content">
+                <h1 class="letter-title">Gửi cậu...</h1>
+                <p>Có bao giờ cậu tin vào một cái hẹn bất ngờ chưa? Mình cứ nghĩ mãi về lần đầu tiên chúng mình trò chuyện qua màn hình điện thoại...</p>
+                
+                <div class="polaroid">
+                    <img src="2f9886c5-b86c-4a26-bc41-92ede4d85c90.jpg" alt="Ảnh 1">
+                </div>
             </div>
-
-            <div class="flap"></div>
-
         </div>
 
-        <button class="open-btn" onclick="openLetter()">
-            Mở Thư ✨
-        </button>
-
-    </div>
-
-</section>
-
-<!-- ẢNH 1 -->
-
-<section id="photo1">
-
-    <div class="card hidden">
-
-        <img src="img1.jpg">
-
-        <div class="text">
-
-            <h2>Lần Đầu Gặp Gỡ ☕</h2>
-
-            <p>
-                Có những cuộc gặp gỡ đến rất tự nhiên,
-                giống như một buổi chiều đẹp trời và một tách cà phê ấm.
-                Biết đâu đây sẽ là một kỷ niệm đáng nhớ của chúng ta.
-            </p>
-
+        <div class="page" id="page-2">
+            <div class="page-number">Trang 2 / 4</div>
+            <div class="letter-content">
+                <p>Và mình chợt nhận ra, tại sao tụi mình không biến những dòng tin nhắn ngẫu hứng ấy thành một buổi gặp mặt thật sự ngoài đời nhỉ?</p>
+                <p>Mình muốn hẹn cậu vào một buổi chiều nhẹ nắng, ở một góc quán quen yên bình, nơi chúng mình có thể ngồi thong thả nhìn ngắm phố xá.</p>
+                
+                <div class="polaroid" style="transform: rotate(1.5deg);">
+                    <img src="qqqqqqq.jpg" alt="Ảnh 2">
+                </div>
+            </div>
         </div>
 
-    </div>
+        <div class="page" id="page-3">
+            <div class="page-number">Trang 3 / 4</div>
+            <div class="letter-content">
+                <p>Nơi mà chúng mình có thể trực tiếp nghe giọng nói của nhau, kể cho nhau nghe vài ba câu chuyện nhỏ nhặt thường ngày.</p>
+                <p>Nếu cậu cũng muốn có một buổi gặp mặt đầu tiên thật nhẹ nhàng và đáng nhớ như thế, hãy lật sang trang sau để phản hồi cho mình biết nhé!</p>
+                
+                <div class="polaroid" style="transform: rotate(-1deg);">
+                    <img src="111111111.jpg" alt="Ảnh 3">
+                </div>
+                <p style="text-align: right; margin-top: 10px;">Chờ tin cậu <span class="heart">♥</span></p>
+            </div>
+        </div>
 
-</section>
+        <div class="page" id="page-4">
+            <div class="page-number">Trang 4 / 4</div>
+            <div class="contact-page">
+                <h2 class="contact-title">Kết nối với mình</h2>
+                <p class="contact-text">
+                    Nếu cậu đồng ý với lời mời này,<br>
+                    hãy nhấn vào nút bên dưới để nhắn tin trực tiếp cho mình qua Zalo nha!
+                </p>
+                <a href="https://zalo.me/0967264962" target="_blank" class="zalo-btn">
+                    Mở Zalo nhắn cho mình ngay 💬
+                </a>
+            </div>
+        </div>
 
-<!-- ẢNH 2 -->
-
-<section>
-
-    <div class="card reverse hidden">
-
-        <img src="img2.jpg">
-
-        <div class="text">
-
-            <h2>Một Cuộc Hẹn Nhẹ Nhàng 🌷</h2>
-
-            <p>
-                Không cần điều gì quá đặc biệt.
-                Chỉ là cùng nhau trò chuyện,
-                chia sẻ vài câu chuyện vui
-                và tận hưởng khoảng thời gian thật thoải mái.
-            </p>
-
+        <div class="navigation-bar">
+            <button class="nav-btn" id="prev-btn" onclick="changePage(-1)" disabled>Trang trước</button>
+            <button class="nav-btn" id="next-btn" onclick="changePage(1)">Trang sau</button>
         </div>
 
     </div>
 
-</section>
+    <script>
+        let currentPage = 1;
+        const totalPages = 4;
 
-<!-- ẢNH 3 -->
-
-<section>
-
-    <div class="card hidden">
-
-        <img src="img3.jpg">
-
-        <div class="text">
-
-            <h2>Mình Chờ Bạn 📸</h2>
-
-            <p>
-                Nếu bạn thấy lời mời này thú vị,
-                hãy cho mình cơ hội được mời bạn một ly nước nhé ❤️
-            </p>
-
-        </div>
-
-    </div>
-
-</section>
-
-<!-- KẾT -->
-
-<section class="final">
-
-    <div class="hidden">
-
-        <h2>✨ Bạn Có Đồng Ý Không?</h2>
-
-        <p>
-            Nhấn nút bên dưới để nhắn tin cho mình nhé.
-        </p>
-
-        <a href="https://zalo.me/0967264962"
-            target="_blank"
-            class="zalo-btn">
-            💙 Nhắn Tin Qua Zalo
-        </a>
-
-    </div>
-
-</section>
-
-<script>
-
-    function openLetter() {
-
-        const envelope = document.getElementById("envelope");
-
-        envelope.classList.add("open");
-
-        setTimeout(() => {
-
-            document
-                .getElementById("envelope-page")
-                .classList.add("fade-out");
-
-        }, 1400);
-
-        setTimeout(() => {
-
-            document
-                .getElementById("photo1")
-                .scrollIntoView({
-                    behavior: "smooth"
-                });
-
-        }, 2300);
-    }
-
-    const observer = new IntersectionObserver(entries => {
-
-        entries.forEach(entry => {
-
-            if (entry.isIntersecting) {
-                entry.target.classList.add("show");
+        function changePage(direction) {
+            // Ẩn trang hiện tại
+            document.getElementById(`page-${currentPage}`).classList.remove('active');
+            
+            // Tính toán trang mới
+            currentPage += direction;
+            
+            // Hiển thị trang mới
+            document.getElementById(`page-${currentPage}`).classList.add('active');
+            
+            // Cập nhật trạng thái các nút bấm
+            document.getElementById('prev-btn').disabled = (currentPage === 1);
+            
+            if (currentPage === totalPages) {
+                document.getElementById('next-btn').innerText = "Hết thư";
+                document.getElementById('next-btn').disabled = true;
+            } else {
+                document.getElementById('next-btn').innerText = "Trang sau";
+                document.getElementById('next-btn').disabled = false;
             }
-
-        });
-
-    }, {
-        threshold: 0.2
-    });
-
-    document.querySelectorAll(".hidden").forEach(el => {
-        observer.observe(el);
-    });
-
-</script>
-```
+        }
+    </script>
 
 </body>
-
 </html>

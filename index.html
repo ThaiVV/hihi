@@ -1,324 +1,471 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML>
- <HEAD>
-  <TITLE> Heart </TITLE>
-  <META NAME="Generator" CONTENT="EditPlus">
-  <META NAME="Author" CONTENT="">
-  <META NAME="Keywords" CONTENT="">
-  <META NAME="Description" CONTENT="">
- 
-    
-  <style>
-  html, body {
-  height: 100%;
-  padding: 0;
-  margin: 0;
-  background: #000;
-  display: flex;
-	justify-content: center;
-	align-items: center;
+<!DOCTYPE html>
+<!--
+  THIỆP MỜI HẸN HÒ — file HTML duy nhất, không cần internet để chạy
+  (chỉ cần internet nếu muốn tải font Google, nếu không có mạng vẫn chạy được với font dự phòng)
 
-}
-
-.box {
-	width: 100%;
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-	display: flex;
-	flex-direction: column;
-}
-
-canvas {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-}
-#pinkboard {
-	position: relative;
-	margin: auto;
-	height: 500px;
-	width: 500px;
-	animation: animate 1.3s infinite;
-}
-
-#pinkboard:before, #pinkboard:after {
-	content: '';
-	position: absolute;
-	background: #FF5CA4;
-	width: 100px;
-	height: 160px;
-	border-top-left-radius: 50px;
-	border-top-right-radius: 50px;
-}
-
-#pinkboard:before {
-	left: 100px;
-	transform: rotate(-45deg);
-	transform-origin: 0 100%;
-	box-shadow: 0 14px 28px rgba(0,0,0,0.25),
-							0 10px 10px rgba(0,0,0,0.22);
-}
-
-#pinkboard:after {
-	left: 0;
-	transform: rotate(45deg);
-	transform-origin: 100% 100%;
-}
-
-@keyframes animate {
-	0% {
-		transform: scale(1);
-	}
-	30% {
-		transform: scale(.8);
-	}
-	60% {
-		transform: scale(1.2);
-	}
-	100% {
-		transform: scale(1);
-	}
-}
-  </style>
- </HEAD>
- 
- <BODY>
-   <div class="box">
-      <canvas id="pinkboard"></canvas>
-   </div>
-  <script>
-  /*
- * Settings
- */
-var settings = {
-  particles: {
-    length:   2000, // maximum amount of particles
-    duration:   2, // particle duration in sec
-    velocity: 100, // particle velocity in pixels/sec
-    effect: -1.3, // play with this for a nice effect
-    size:      13, // particle size in pixels
-  },
-};
-/*
- * RequestAnimationFrame polyfill by Erik Möller
- */
-(function(){var b=0;var c=["ms","moz","webkit","o"];for(var a=0;a<c.length&&!window.requestAnimationFrame;++a){window.requestAnimationFrame=window[c[a]+"RequestAnimationFrame"];window.cancelAnimationFrame=window[c[a]+"CancelAnimationFrame"]||window[c[a]+"CancelRequestAnimationFrame"]}if(!window.requestAnimationFrame){window.requestAnimationFrame=function(h,e){var d=new Date().getTime();var f=Math.max(0,16-(d-b));var g=window.setTimeout(function(){h(d+f)},f);b=d+f;return g}}if(!window.cancelAnimationFrame){window.cancelAnimationFrame=function(d){clearTimeout(d)}}}());
-/*
- * Point class
- */
-var Point = (function() {
-  function Point(x, y) {
-    this.x = (typeof x !== 'undefined') ? x : 0;
-    this.y = (typeof y !== 'undefined') ? y : 0;
+  CÁC CHỖ BẠN NÊN SỬA LẠI CHO ĐÚNG, tìm bằng từ khoá "SỬA Ở ĐÂY":
+   - Tên người được mời
+   - Tên người gửi (ký tên)
+   - Ngày / giờ / địa điểm hẹn
+   - Đoạn lời nhắn ở Trang 2 và Trang 4 (viết theo giọng của bạn cho thật)
+-->
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+<title>Một lời mời nhỏ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Caveat:wght@500;700&family=Work+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy-deep:#0c0f24;
+    --navy:#171b3a;
+    --navy-soft:#232a52;
+    --parchment:#f7eedb;
+    --parchment-shade:#ece0c6;
+    --ink:#2f2a22;
+    --ink-soft:#5a5142;
+    --rose:#c97b63;
+    --rose-deep:#a85a45;
+    --gold:#cda339;
+    --sage:#8a9a76;
   }
-  Point.prototype.clone = function() {
-    return new Point(this.x, this.y);
-  };
-  Point.prototype.length = function(length) {
-    if (typeof length == 'undefined')
-      return Math.sqrt(this.x * this.x + this.y * this.y);
-    this.normalize();
-    this.x *= length;
-    this.y *= length;
-    return this;
-  };
-  Point.prototype.normalize = function() {
-    var length = this.length();
-    this.x /= length;
-    this.y /= length;
-    return this;
-  };
-  return Point;
+
+  *{box-sizing:border-box;}
+  html,body{
+    margin:0; padding:0; height:100%;
+    background:radial-gradient(ellipse at 50% -10%, var(--navy-soft), var(--navy-deep) 70%);
+    font-family:'Work Sans', sans-serif;
+    color:var(--ink);
+    overflow:hidden;
+  }
+
+  /* ---------- bầu trời đêm nền ---------- */
+  #sky{
+    position:fixed; inset:0; z-index:0; overflow:hidden; pointer-events:none;
+  }
+  .star{
+    position:absolute; background:#fff; border-radius:50%;
+    opacity:.25; animation:twinkle ease-in-out infinite;
+  }
+  @keyframes twinkle{
+    0%,100%{opacity:.15; transform:scale(1);}
+    50%{opacity:.9; transform:scale(1.25);}
+  }
+  .moon{
+    position:absolute; top:6%; right:9%; width:clamp(46px,8vw,86px); height:clamp(46px,8vw,86px);
+    border-radius:50%;
+    background:radial-gradient(circle at 35% 35%, #fff8e3, #f3e2a8 55%, #e3cf85 100%);
+    box-shadow:0 0 50px 14px rgba(243,226,168,.35), 0 0 110px 40px rgba(243,226,168,.12);
+    opacity:.9;
+  }
+
+  /* ---------- khung sân khấu chung ---------- */
+  .stage{
+    position:fixed; inset:0; display:flex; align-items:center; justify-content:center;
+    z-index:2;
+  }
+
+  /* ================= PHONG BÌ ================= */
+  #envelopeStage{ flex-direction:column; gap:22px; transition:opacity .5s ease, transform .5s ease; }
+  #envelopeStage.hide{ opacity:0; transform:scale(.92); pointer-events:none; }
+
+  .eyebrow{
+    font-family:'Work Sans', sans-serif; font-size:11px; letter-spacing:.22em; text-transform:uppercase;
+    color:#d8cfa3; opacity:.75; text-align:center;
+  }
+
+  .envelope-wrap{ perspective:1400px; cursor:pointer; }
+  .envelope{
+    position:relative;
+    width:clamp(250px,62vw,340px);
+    height:clamp(168px,42vw,228px);
+    background:linear-gradient(160deg, var(--parchment), var(--parchment-shade));
+    border-radius:5px;
+    box-shadow:0 30px 60px -10px rgba(0,0,0,.55), 0 2px 0 rgba(255,255,255,.08) inset;
+    transform-style:preserve-3d;
+  }
+  .envelope::after{
+    content:"";
+    position:absolute; left:6%; right:6%; bottom:8%; height:1px;
+    background:linear-gradient(90deg, transparent, rgba(120,100,60,.35), transparent);
+  }
+  .flap{
+    position:absolute; top:0; left:0; width:100%; height:56%;
+    background:linear-gradient(150deg, #efe3c6, #e1cda1);
+    clip-path:polygon(0 0, 100% 0, 50% 100%);
+    transform-origin:top center;
+    transition:transform .85s cubic-bezier(.65,0,.35,1);
+    backface-visibility:hidden;
+    box-shadow:0 8px 16px rgba(0,0,0,.18);
+    z-index:3;
+  }
+  .flap.open{ transform:rotateX(178deg); }
+  .seal{
+    position:absolute; top:56%; left:50%; transform:translate(-50%,-50%);
+    width:clamp(40px,9vw,54px); height:clamp(40px,9vw,54px); border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, var(--rose), var(--rose-deep) 70%);
+    box-shadow:0 6px 14px rgba(0,0,0,.4), inset 0 -3px 6px rgba(0,0,0,.25), inset 0 3px 5px rgba(255,255,255,.25);
+    display:flex; align-items:center; justify-content:center;
+    z-index:4; transition:opacity .4s ease, transform .4s ease;
+    font-family:'Cormorant Garamond', serif; color:#fbe9d8; font-size:clamp(16px,3.4vw,20px); font-style:italic;
+  }
+  .seal.gone{ opacity:0; transform:translate(-50%,-50%) scale(.4); }
+
+  .open-hint{
+    font-family:'Caveat', cursive; font-size:clamp(17px,3vw,21px); color:#e9dfc0; opacity:.85;
+    text-align:center; animation:bob 2.4s ease-in-out infinite;
+  }
+  @keyframes bob{ 0%,100%{transform:translateY(0);} 50%{transform:translateY(6px);} }
+
+  /* ================= QUYỂN THIỆP ================= */
+  #bookStage{ opacity:0; transform:scale(.94); transition:opacity .6s ease, transform .6s ease; }
+  #bookStage.show{ opacity:1; transform:scale(1); }
+
+  .book{
+    position:relative;
+    width:clamp(300px,86vw,440px);
+    height:clamp(440px,78vh,620px);
+    perspective:1600px;
+  }
+  .leaf{
+    position:absolute; inset:0;
+    background:
+      radial-gradient(circle at 90% 6%, rgba(201,123,99,.07), transparent 40%),
+      linear-gradient(165deg, var(--parchment), var(--parchment-shade));
+    border-radius:10px;
+    box-shadow:0 30px 70px -15px rgba(0,0,0,.55);
+    padding:clamp(26px,6vw,42px) clamp(24px,6vw,36px);
+    display:flex; flex-direction:column;
+    transition:transform .68s cubic-bezier(.22,.61,.36,1), opacity .5s ease;
+    transform-origin:center;
+  }
+  .leaf::before{
+    content:""; position:absolute; inset:10px; border:1px solid rgba(120,95,55,.18); border-radius:6px; pointer-events:none;
+  }
+
+  .divider{ width:46px; height:1px; background:linear-gradient(90deg, transparent, var(--gold), transparent); margin:14px 0; opacity:.8;}
+  .label{ font-size:10.5px; letter-spacing:.2em; text-transform:uppercase; color:var(--rose-deep); opacity:.8; }
+
+  /* Trang 0 — bìa */
+  .leaf-cover{ align-items:flex-start; justify-content:center; gap:8px; }
+  .leaf-cover .greet{ font-family:'Cormorant Garamond', serif; font-style:italic; font-weight:500; font-size:clamp(26px,7vw,36px); color:var(--ink); }
+  .leaf-cover .sub{ font-family:'Caveat', cursive; font-size:clamp(19px,4.6vw,24px); color:var(--ink-soft); margin-top:2px; }
+  .leaf-cover .flourish{ margin-top:auto; font-size:13px; letter-spacing:.3em; color:var(--gold); opacity:.7;}
+
+  /* Trang 1 — lời nhắn */
+  .leaf-msg p{ font-family:'Cormorant Garamond', serif; font-size:clamp(17px,4vw,20px); line-height:1.75; color:var(--ink); margin:0; }
+  .leaf-msg .label{ margin-bottom:4px; }
+
+  /* Trang 2 — vé hẹn hò */
+  .ticket{ flex:1; display:flex; flex-direction:column; justify-content:center; gap:14px; }
+  .ticket-row{ display:flex; justify-content:space-between; align-items:baseline; border-bottom:1px dashed rgba(120,95,55,.3); padding-bottom:8px;}
+  .ticket-row .k{ font-size:11px; letter-spacing:.15em; text-transform:uppercase; color:var(--ink-soft); }
+  .ticket-row .v{ font-family:'Cormorant Garamond', serif; font-size:clamp(17px,4.2vw,21px); color:var(--ink); font-weight:600; text-align:right;}
+  .ticket-note{ font-family:'Caveat', cursive; font-size:17px; color:var(--ink-soft); margin-top:6px; }
+
+  /* Trang 3 — PS */
+  .leaf-ps{ justify-content:center; align-items:center; text-align:center; gap:10px; }
+  .leaf-ps .verse{ font-family:'Cormorant Garamond', serif; font-style:italic; font-size:clamp(18px,4.4vw,21px); line-height:1.7; color:var(--ink);}
+  .leaf-ps .ps{ font-family:'Caveat', cursive; font-size:19px; color:var(--rose-deep); margin-top:10px;}
+
+  /* Trang 4 — RSVP */
+  .leaf-rsvp{ justify-content:center; align-items:center; text-align:center; gap:16px; }
+  .leaf-rsvp h3{ font-family:'Cormorant Garamond', serif; font-weight:500; font-size:clamp(22px,5.6vw,28px); margin:0; color:var(--ink); }
+  .rsvp-btns{ display:flex; flex-direction:column; gap:12px; width:100%; max-width:260px; }
+  .rsvp-btn{
+    font-family:'Work Sans', sans-serif; font-size:14.5px; letter-spacing:.02em;
+    padding:13px 18px; border-radius:30px; border:none; cursor:pointer;
+    transition:transform .2s ease, box-shadow .2s ease, background .2s ease;
+  }
+  .rsvp-yes{ background:linear-gradient(135deg, var(--rose), var(--rose-deep)); color:#fff6ec; box-shadow:0 10px 24px -8px rgba(168,90,69,.6); font-weight:500; }
+  .rsvp-yes:hover{ transform:translateY(-2px); }
+  .rsvp-wait{ background:transparent; color:var(--ink-soft); border:1px solid rgba(90,80,60,.35); }
+  .rsvp-wait:hover{ background:rgba(90,80,60,.06); }
+  .rsvp-result{ display:none; flex-direction:column; align-items:center; gap:10px; }
+  .rsvp-result.show{ display:flex; }
+  .rsvp-result p{ font-family:'Cormorant Garamond', serif; font-size:clamp(17px,4.2vw,20px); line-height:1.7; color:var(--ink); margin:0;}
+  .signature{ font-family:'Caveat', cursive; font-size:24px; color:var(--rose-deep); margin-top:6px; }
+  .back-link{ font-size:12.5px; color:var(--ink-soft); text-decoration:underline; cursor:pointer; background:none; border:none; margin-top:4px; }
+
+  /* ---------- điều hướng ---------- */
+  .nav-arrow{
+    position:absolute; top:50%; transform:translateY(-50%);
+    width:38px; height:38px; border-radius:50%; border:none; cursor:pointer;
+    background:rgba(247,238,219,.12); color:#f3e7c9; font-size:18px;
+    display:flex; align-items:center; justify-content:center;
+    backdrop-filter:blur(2px);
+    transition:opacity .25s ease, background .2s ease;
+    z-index:5;
+  }
+  .nav-arrow:hover{ background:rgba(247,238,219,.22); }
+  .nav-arrow.prev{ left:-50px; }
+  .nav-arrow.next{ right:-50px; }
+  .nav-arrow.disabled{ opacity:0; pointer-events:none; }
+  @media (max-width:560px){
+    .nav-arrow.prev{ left:6px; }
+    .nav-arrow.next{ right:6px; }
+  }
+
+  .dots{ position:absolute; bottom:-34px; left:0; right:0; display:flex; justify-content:center; gap:9px; }
+  .dot{ width:7px; height:7px; border-radius:50%; background:rgba(243,231,201,.3); border:none; cursor:pointer; padding:0; transition:background .25s ease, transform .25s ease;}
+  .dot.active{ background:#f3e7c9; transform:scale(1.3); }
+
+  /* ---------- mảnh sao bay khi bấm "Có" ---------- */
+  .burst-particle{
+    position:fixed; z-index:9999; pointer-events:none; font-size:16px;
+    animation:burst 1s ease-out forwards;
+  }
+  @keyframes burst{
+    0%{ opacity:1; transform:translate(0,0) scale(1) rotate(0deg); }
+    100%{ opacity:0; transform:translate(var(--bx), var(--by)) scale(.4) rotate(180deg); }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration:.01ms !important; transition-duration:.01ms !important; }
+  }
+</style>
+</head>
+<body>
+
+<div id="sky"></div>
+
+<!-- ===== MÀN PHONG BÌ ===== -->
+<div class="stage" id="envelopeStage">
+  <div class="eyebrow">Một lời mời nhỏ</div>
+  <div class="envelope-wrap" id="envelopeWrap">
+    <div class="envelope">
+      <div class="seal" id="seal">♡</div>
+      <div class="flap" id="flap"></div>
+    </div>
+  </div>
+  <div class="open-hint">chạm vào con dấu để mở thiệp</div>
+</div>
+
+<!-- ===== MÀN QUYỂN THIỆP ===== -->
+<div class="stage" id="bookStage">
+  <div class="book" id="book">
+
+    <button class="nav-arrow prev" id="prevBtn" aria-label="Trang trước">‹</button>
+    <button class="nav-arrow next" id="nextBtn" aria-label="Trang sau">›</button>
+
+    <!-- Trang 0: Bìa -->
+    <section class="leaf leaf-cover">
+      <span class="label">Gửi một người đặc biệt</span>
+      <div class="greet">Gửi Linh,</div> <!-- SỬA Ở ĐÂY: tên người được mời -->
+      <div class="sub">anh có một điều nho nhỏ muốn nói…</div>
+      <div class="flourish">✦ ✦ ✦</div>
+    </section>
+
+    <!-- Trang 1: Lời nhắn -->
+    <section class="leaf leaf-msg">
+      <span class="label">Trước khi vào chuyện chính</span>
+      <div class="divider"></div>
+      <p>
+        Dạo này, mỗi lần nói chuyện với em, anh đều thấy một ngày dài trở nên nhẹ nhõm hơn hẳn.
+        Anh đã nghĩ tới việc này nhiều lần rồi — rủ em đi đâu đó, chỉ hai đứa,
+        để xem cảm giác ấy có thật như anh nghĩ không.
+      </p>
+      <!-- SỬA Ở ĐÂY: viết lại đoạn này theo đúng giọng và câu chuyện của bạn -->
+    </section>
+
+    <!-- Trang 2: Vé hẹn hò -->
+    <section class="leaf">
+      <span class="label">Vé hẹn hò</span>
+      <div class="divider"></div>
+      <div class="ticket">
+        <div class="ticket-row"><span class="k">Ngày</span><span class="v">Thứ Bảy, 20.06</span></div> <!-- SỬA Ở ĐÂY -->
+        <div class="ticket-row"><span class="k">Giờ</span><span class="v">18:30</span></div> <!-- SỬA Ở ĐÂY -->
+        <div class="ticket-row"><span class="k">Nơi gặp</span><span class="v">Quán cà phê góc phố cũ</span></div> <!-- SỬA Ở ĐÂY -->
+        <div class="ticket-note">trang phục: thoải mái nhất có thể nha</div>
+      </div>
+    </section>
+
+    <!-- Trang 3: PS -->
+    <section class="leaf leaf-ps">
+      <span class="label">Tái bút</span>
+      <div class="verse">
+        "Nếu hôm đó trời có mưa,<br>
+        mình sẽ tìm một quán nhỏ để trốn cùng nhau."
+      </div>
+      <div class="ps">— chỉ là một suy nghĩ vui thôi, đừng lo nha</div>
+    </section>
+
+    <!-- Trang 4: RSVP -->
+    <section class="leaf leaf-rsvp">
+      <div id="rsvpQuestion">
+        <h3>Em nghĩ sao?</h3>
+        <div class="divider" style="margin:14px auto;"></div>
+        <div class="rsvp-btns">
+          <button class="rsvp-btn rsvp-yes" id="yesBtn">Có, mình rất muốn đi 🌙</button>
+          <button class="rsvp-btn rsvp-wait" id="waitBtn">Cho mình thêm chút thời gian</button>
+        </div>
+      </div>
+
+      <div class="rsvp-result" id="resultYes">
+        <p>Tuyệt vời. Vậy hẹn em thứ Bảy này nhé —<br>anh sẽ nhắn lại để chốt giờ giấc sớm.</p>
+        <div class="signature">— Quang</div> <!-- SỬA Ở ĐÂY: tên người gửi -->
+      </div>
+
+      <div class="rsvp-result" id="resultWait">
+        <p>Không sao cả. Mình sẽ đợi tin từ em,<br>không vội đâu.</p>
+        <button class="back-link" id="backBtn">quay lại đọc thiệp</button>
+      </div>
+    </section>
+
+    <div class="dots" id="dots"></div>
+  </div>
+</div>
+
+<script>
+(function(){
+  /* ---------- bầu trời đêm ---------- */
+  const sky = document.getElementById('sky');
+  const starCount = window.innerWidth < 600 ? 50 : 90;
+  for(let i=0;i<starCount;i++){
+    const s = document.createElement('div');
+    s.className = 'star';
+    const size = (Math.random()*2 + 1).toFixed(1);
+    s.style.width = size+'px';
+    s.style.height = size+'px';
+    s.style.left = (Math.random()*100)+'%';
+    s.style.top = (Math.random()*100)+'%';
+    s.style.animationDuration = (2 + Math.random()*3).toFixed(2)+'s';
+    s.style.animationDelay = (Math.random()*4).toFixed(2)+'s';
+    sky.appendChild(s);
+  }
+  const moon = document.createElement('div');
+  moon.className = 'moon';
+  sky.appendChild(moon);
+
+  /* ---------- mở phong bì ---------- */
+  const envelopeStage = document.getElementById('envelopeStage');
+  const bookStage = document.getElementById('bookStage');
+  const flap = document.getElementById('flap');
+  const seal = document.getElementById('seal');
+  const envelopeWrap = document.getElementById('envelopeWrap');
+
+  envelopeWrap.addEventListener('click', openEnvelope);
+
+  function openEnvelope(){
+    if(flap.classList.contains('open')) return;
+    flap.classList.add('open');
+    seal.classList.add('gone');
+    setTimeout(()=>{
+      envelopeStage.classList.add('hide');
+    }, 550);
+    setTimeout(()=>{
+      bookStage.classList.add('show');
+      render();
+    }, 750);
+  }
+
+  /* ---------- điều hướng trang ---------- */
+  const leaves = Array.from(document.querySelectorAll('.leaf'));
+  const dotsWrap = document.getElementById('dots');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  let current = 0;
+
+  leaves.forEach((leaf, i)=>{
+    const d = document.createElement('button');
+    d.className = 'dot';
+    d.setAttribute('aria-label', 'Trang ' + (i+1));
+    d.addEventListener('click', ()=>{ current = i; render(); });
+    dotsWrap.appendChild(d);
+  });
+  const dots = Array.from(dotsWrap.children);
+
+  function render(){
+    leaves.forEach((leaf, i)=>{
+      if(i === current){
+        leaf.style.transform = 'rotateY(0deg) translateX(0) scale(1)';
+        leaf.style.opacity = '1';
+        leaf.style.pointerEvents = 'auto';
+        leaf.style.zIndex = 2;
+      } else if(i < current){
+        leaf.style.transform = 'rotateY(-22deg) translateX(-46px) scale(.94)';
+        leaf.style.opacity = '0';
+        leaf.style.pointerEvents = 'none';
+        leaf.style.zIndex = 1;
+      } else {
+        leaf.style.transform = 'rotateY(22deg) translateX(46px) scale(.94)';
+        leaf.style.opacity = '0';
+        leaf.style.pointerEvents = 'none';
+        leaf.style.zIndex = 1;
+      }
+    });
+    dots.forEach((d,i)=> d.classList.toggle('active', i===current));
+    prevBtn.classList.toggle('disabled', current===0);
+    nextBtn.classList.toggle('disabled', current===leaves.length-1);
+  }
+
+  function next(){ if(current < leaves.length-1){ current++; render(); } }
+  function prev(){ if(current > 0){ current--; render(); } }
+
+  prevBtn.addEventListener('click', prev);
+  nextBtn.addEventListener('click', next);
+
+  document.addEventListener('keydown', (e)=>{
+    if(!bookStage.classList.contains('show')) return;
+    if(e.key === 'ArrowRight') next();
+    if(e.key === 'ArrowLeft') prev();
+  });
+
+  /* lướt chạm trên di động */
+  let touchX = null;
+  const book = document.getElementById('book');
+  book.addEventListener('touchstart', (e)=>{ touchX = e.touches[0].clientX; });
+  book.addEventListener('touchend', (e)=>{
+    if(touchX === null) return;
+    const dx = e.changedTouches[0].clientX - touchX;
+    if(Math.abs(dx) > 40){ dx < 0 ? next() : prev(); }
+    touchX = null;
+  });
+
+  /* ---------- RSVP ---------- */
+  const yesBtn = document.getElementById('yesBtn');
+  const waitBtn = document.getElementById('waitBtn');
+  const backBtn = document.getElementById('backBtn');
+  const rsvpQuestion = document.getElementById('rsvpQuestion');
+  const resultYes = document.getElementById('resultYes');
+  const resultWait = document.getElementById('resultWait');
+
+  yesBtn.addEventListener('click', (e)=>{
+    burst(e.clientX, e.clientY);
+    rsvpQuestion.style.display = 'none';
+    resultYes.classList.add('show');
+  });
+
+  waitBtn.addEventListener('click', ()=>{
+    rsvpQuestion.style.display = 'none';
+    resultWait.classList.add('show');
+  });
+
+  backBtn.addEventListener('click', ()=>{
+    resultWait.classList.remove('show');
+    rsvpQuestion.style.display = 'block';
+    current = 1; render();
+  });
+
+  function burst(x, y){
+    const glyphs = ['✦','♡','✧','☾'];
+    for(let i=0;i<16;i++){
+      const p = document.createElement('div');
+      p.className = 'burst-particle';
+      p.textContent = glyphs[Math.floor(Math.random()*glyphs.length)];
+      p.style.left = x+'px';
+      p.style.top = y+'px';
+      p.style.color = Math.random() > .5 ? '#cda339' : '#c97b63';
+      const angle = Math.random()*Math.PI*2;
+      const dist = 60 + Math.random()*90;
+      p.style.setProperty('--bx', (Math.cos(angle)*dist)+'px');
+      p.style.setProperty('--by', (Math.sin(angle)*dist - 30)+'px');
+      document.body.appendChild(p);
+      setTimeout(()=> p.remove(), 1050);
+    }
+  }
 })();
-/*
- * Particle class
- */
-var Particle = (function() {
-  function Particle() {
-    this.position = new Point();
-    this.velocity = new Point();
-    this.acceleration = new Point();
-    this.age = 0;
-  }
-  Particle.prototype.initialize = function(x, y, dx, dy) {
-    this.position.x = x;
-    this.position.y = y;
-    this.velocity.x = dx;
-    this.velocity.y = dy;
-    this.acceleration.x = dx * settings.particles.effect;
-    this.acceleration.y = dy * settings.particles.effect;
-    this.age = 0;
-  };
-  Particle.prototype.update = function(deltaTime) {
-    this.position.x += this.velocity.x * deltaTime;
-    this.position.y += this.velocity.y * deltaTime;
-    this.velocity.x += this.acceleration.x * deltaTime;
-    this.velocity.y += this.acceleration.y * deltaTime;
-    this.age += deltaTime;
-  };
-  Particle.prototype.draw = function(context, image) {
-    function ease(t) {
-      return (--t) * t * t + 1;
-    }
-    var size = image.width * ease(this.age / settings.particles.duration);
-    context.globalAlpha = 1 - this.age / settings.particles.duration;
-    context.drawImage(image, this.position.x - size / 2, this.position.y - size / 2, size, size);
-  };
-  return Particle;
-})();
-/*
- * ParticlePool class
- */
-var ParticlePool = (function() {
-  var particles,
-      firstActive = 0,
-      firstFree   = 0,
-      duration    = settings.particles.duration;
-  
-  function ParticlePool(length) {
-    // create and populate particle pool
-    particles = new Array(length);
-    for (var i = 0; i < particles.length; i++)
-      particles[i] = new Particle();
-  }
-  ParticlePool.prototype.add = function(x, y, dx, dy) {
-    particles[firstFree].initialize(x, y, dx, dy);
-    
-    // handle circular queue
-    firstFree++;
-    if (firstFree   == particles.length) firstFree   = 0;
-    if (firstActive == firstFree       ) firstActive++;
-    if (firstActive == particles.length) firstActive = 0;
-  };
-  ParticlePool.prototype.update = function(deltaTime) {
-    var i;
-    
-    // update active particles
-    if (firstActive < firstFree) {
-      for (i = firstActive; i < firstFree; i++)
-        particles[i].update(deltaTime);
-    }
-    if (firstFree < firstActive) {
-      for (i = firstActive; i < particles.length; i++)
-        particles[i].update(deltaTime);
-      for (i = 0; i < firstFree; i++)
-        particles[i].update(deltaTime);
-    }
-    
-    // remove inactive particles
-    while (particles[firstActive].age >= duration && firstActive != firstFree) {
-      firstActive++;
-      if (firstActive == particles.length) firstActive = 0;
-    }
-    
-    
-  };
-  ParticlePool.prototype.draw = function(context, image) {
-    // draw active particles
-    if (firstActive < firstFree) {
-      for (i = firstActive; i < firstFree; i++)
-        particles[i].draw(context, image);
-    }
-    if (firstFree < firstActive) {
-      for (i = firstActive; i < particles.length; i++)
-        particles[i].draw(context, image);
-      for (i = 0; i < firstFree; i++)
-        particles[i].draw(context, image);
-    }
-  };
-  return ParticlePool;
-})();
-/*
- * Putting it all together
- */
-(function(canvas) {
-  var context = canvas.getContext('2d'),
-      particles = new ParticlePool(settings.particles.length),
-      particleRate = settings.particles.length / settings.particles.duration, // particles/sec
-      time;
-  
-  // get point on heart with -PI <= t <= PI
-  function pointOnHeart(t) {
-    return new Point(
-      160 * Math.pow(Math.sin(t), 3),
-      130 * Math.cos(t) - 50 * Math.cos(2 * t) - 20 * Math.cos(3 * t) - 10 * Math.cos(4 * t) + 25
-    );
-  }
-  
-  // creating the particle image using a dummy canvas
-  var image = (function() {
-    var canvas  = document.createElement('canvas'),
-        context = canvas.getContext('2d');
-    canvas.width  = settings.particles.size;
-    canvas.height = settings.particles.size;
-    // helper function to create the path
-    function to(t) {
-      var point = pointOnHeart(t);
-      point.x = settings.particles.size / 2 + point.x * settings.particles.size / 350;
-      point.y = settings.particles.size / 2 - point.y * settings.particles.size / 350;
-      return point;
-    }
-    // create the path
-    context.beginPath();
-    var t = -Math.PI;
-    var point = to(t);
-    context.moveTo(point.x, point.y);
-    while (t < Math.PI) {
-      t += 0.01; // baby steps!
-      point = to(t);
-      context.lineTo(point.x, point.y);
-    }
-    context.closePath();
-    // create the fill
-    context.fillStyle = '#FF5CA4';
-    context.fill();
-    // create the image
-    var image = new Image();
-    image.src = canvas.toDataURL();
-    return image;
-  })();
-  
-  // render that thing!
-  function render() {
-    // next animation frame
-    requestAnimationFrame(render);
-    
-    // update time
-    var newTime   = new Date().getTime() / 1000,
-        deltaTime = newTime - (time || newTime);
-    time = newTime;
-    
-    // clear canvas
-    context.clearRect(0, 0, canvas.width, canvas.height);
-    
-    // create new particles
-    var amount = particleRate * deltaTime;
-    for (var i = 0; i < amount; i++) {
-      var pos = pointOnHeart(Math.PI - 2 * Math.PI * Math.random());
-      var dir = pos.clone().length(settings.particles.velocity);
-      particles.add(canvas.width / 2 + pos.x, canvas.height / 2 - pos.y, dir.x, -dir.y);
-    }
-    
-    // update and draw particles
-    particles.update(deltaTime);
-    particles.draw(context, image);
-  }
-  
-  // handle (re-)sizing of the canvas
-  function onResize() {
-    canvas.width  = canvas.clientWidth;
-    canvas.height = canvas.clientHeight;
-  }
-  window.onresize = onResize;
-  
-  // delay rendering bootstrap
-  setTimeout(function() {
-    onResize();
-    render();
-  }, 10);
-})(document.getElementById('pinkboard'));
-  </script>
- </BODY>
-</HTML>
+</script>
+</body>
+</html>

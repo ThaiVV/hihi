@@ -3,10 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lời Mời Gặp Mặt Lần Đầu</title>
-    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+    <title>Thư Mời Gặp Mặt Cao Cấp</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     
     <style>
+        :root {
+            --bg-dark: #0f1115;
+            --accent-gold: #c5a880;
+            --text-light: #f5efe6;
+            --text-muted: #a0aab2;
+        }
+
         * {
             box-sizing: border-box;
             margin: 0;
@@ -14,264 +21,230 @@
         }
 
         body {
-            background-color: #f5efe6;
-            font-family: 'Quicksand', sans-serif;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            overflow: hidden; /* Ẩn thanh cuộn để tạo cảm giác ứng dụng chuyên nghiệp */
+        }
+
+        /* Khung chứa các trang */
+        .page-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        /* Định dạng chung cho mỗi trang */
+        .page {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
             padding: 20px;
+            opacity: 0;
+            pointer-events: none;
+            transform: scale(1.05);
+            transition: opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1), 
+                        transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+            z-index: 1;
         }
 
-        /* Khung lớn chứa bức thư */
-        .letter-container {
-            background: #fffdf9;
-            max-width: 500px;
-            width: 100%;
-            min-height: 650px;
-            padding: 35px 30px;
-            box-shadow: 0 10px 30px rgba(163, 145, 119, 0.25);
-            border-radius: 12px;
-            position: relative;
-            border: 1px solid #eae1d4;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        /* Các trang thư (mặc định ẩn, chỉ hiện trang có class active) */
-        .page {
-            display: none;
-            animation: fadeIn 0.5s ease forwards;
-        }
-
+        /* Trang đang được hiển thị chủ động */
         .page.active {
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-            justify-content: Batween;
+            opacity: 1;
+            pointer-events: auto;
+            transform: scale(1);
+            z-index: 2;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Nội dung chữ viết tay */
-        .letter-content {
-            font-family: 'Caveat', cursive;
-            font-size: 26px;
-            line-height: 1.5;
-            color: #4a3f35;
-        }
-
-        .letter-title {
-            text-align: center;
-            font-size: 34px;
-            margin-bottom: 20px;
-            color: #8c6239;
-            font-weight: 700;
-        }
-
-        .page-number {
-            text-align: center;
-            font-size: 14px;
-            color: #a19177;
-            font-family: 'Quicksand', sans-serif;
-            margin-bottom: 15px;
-            font-weight: bold;
-        }
-
-        p {
-            margin-bottom: 15px;
-            text-indent: 25px;
-        }
-
-        /* Khung ảnh phong cách Polaroid */
-        .polaroid {
-            background: #ffffff;
-            padding: 10px 10px 20px 10px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
-            border: 1px solid #eee;
-            width: 90%;
-            margin: 20px auto;
-            transform: rotate(-1deg);
-        }
-
-        .polaroid img {
+        /* Khung nội dung bên trong mỗi trang */
+        .card {
+            background: #191f28;
             width: 100%;
-            height: auto;
-            display: block;
-            object-fit: cover;
-            border-radius: 2px;
-        }
-
-        /* Trang cuối cùng (Thông tin liên lạc) */
-        .contact-page {
+            max-width: 500px;
+            border-radius: 24px;
+            border: 1px solid rgba(197, 168, 128, 0.15);
+            padding: 30px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
             text-align: center;
-            padding-top: 40px;
         }
 
-        .contact-title {
-            font-size: 28px;
-            color: #8c6239;
+        .card h2 {
+            font-family: 'Playfair Display', serif;
+            color: var(--accent-gold);
+            font-size: 26px;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+        }
+
+        .card .subtitle {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            color: var(--text-muted);
+            font-size: 14px;
             margin-bottom: 20px;
-            font-weight: 700;
         }
 
-        .contact-text {
-            font-size: 18px;
-            color: #61554a;
-            margin-bottom: 30px;
+        /* Khung ảnh */
+        .img-wrapper {
+            width: 100%;
+            height: 380px;
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .img-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .card .description {
+            font-size: 15px;
+            color: #d1d5db;
             line-height: 1.6;
+            margin-bottom: 25px;
+            font-weight: 300;
         }
 
-        /* Nút bấm Zalo */
-        .zalo-btn {
+        /* Hệ thống nút bấm cao cấp */
+        .btn {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(135deg, #0084ff, #0066cc);
-            color: white;
-            text-decoration: none;
-            padding: 14px 35px;
+            background: transparent;
+            color: var(--accent-gold);
+            border: 1px solid var(--accent-gold);
+            padding: 12px 35px;
+            font-size: 14px;
+            font-weight: 500;
             border-radius: 30px;
-            font-weight: 700;
-            font-size: 16px;
-            box-shadow: 0 5px 15px rgba(0, 132, 255, 0.3);
+            cursor: pointer;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            transition: all 0.4s ease;
+            text-decoration: none;
+        }
+
+        .btn:hover {
+            background: var(--accent-gold);
+            color: var(--bg-dark);
+            box-shadow: 0 8px 20px rgba(197, 168, 128, 0.3);
+            font-weight: 600;
+        }
+
+        .zalo-btn {
+            background: var(--accent-gold);
+            color: var(--bg-dark);
+            font-weight: 600;
+        }
+        
+        .zalo-btn:hover {
+            background: #e5c9a3;
+            color: var(--bg-dark);
+        }
+
+        /* Thanh tiến trình (Progress Dots) ở góc dưới */
+        .progress-dots {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 12px;
+            z-index: 10;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
             transition: all 0.3s ease;
         }
 
-        .zalo-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(0, 132, 255, 0.4);
+        .dot.active {
+            background: var(--accent-gold);
+            width: 24px;
+            border-radius: 4px;
         }
 
-        /* Thanh điều hướng quay trang ở dưới cùng */
-        .navigation-bar {
-            margin-top: 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-top: 1px solid #f0e6d6;
-            padding-top: 15px;
-        }
-
-        .nav-btn {
-            background-color: #8c6239;
-            color: white;
-            border: none;
-            padding: 8px 18px;
-            font-family: 'Quicksand', sans-serif;
-            font-size: 14px;
-            font-weight: bold;
-            border-radius: 20px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .nav-btn:hover {
-            background-color: #6f4e2c;
-        }
-
-        .nav-btn:disabled {
-            background-color: #e0d7cb;
-            color: #a19177;
-            cursor: not-allowed;
-        }
-
-        .heart {
-            color: #cc4444;
+        /* Tối ưu thiết bị di động */
+        @media (max-width: 480px) {
+            .card { padding: 20px; }
+            .img-wrapper { height: 300px; }
+            .card h2 { font-size: 22px; }
         }
     </style>
 </head>
 <body>
 
-    <div class="letter-container">
-        
-        <div class="page active" id="page-1">
-            <div class="page-number">Trang 1 / 4</div>
-            <div class="letter-content">
-                <h1 class="letter-title">Gửi cậu...</h1>
-                <p>Có bao giờ cậu tin vào một cái hẹn bất ngờ chưa? Mình cứ nghĩ mãi về lần đầu tiên chúng mình trò chuyện qua màn hình điện thoại...</p>
-                
-                <div class="polaroid">
-                    <img src="2f9886c5-b86c-4a26-bc41-92ede4d85c90.jpg" alt="Ảnh 1">
+    <div class="page-container">
+
+        <div class="page active" id="page1">
+            <div class="card">
+                <h2>Lời Chào Đầu</h2>
+                <div class="subtitle">The Beginning</div>
+                <div class="img-wrapper">
+                    <img src="../img/111111111.jpg" alt="Hình ảnh thứ nhất">
                 </div>
+                <p class="description">Chào bạn, có lẽ cuộc gặp gỡ nào cũng cần một chút không gian để mở lời. Mình gửi tới bạn tấm hình đầu tiên thay cho một nụ cười làm quen chân thành nhất.</p>
+                <button class="btn" onclick="nextPage(2)">Khám Phá Tiếp</button>
             </div>
         </div>
 
-        <div class="page" id="page-2">
-            <div class="page-number">Trang 2 / 4</div>
-            <div class="letter-content">
-                <p>Và mình chợt nhận ra, tại sao tụi mình không biến những dòng tin nhắn ngẫu hứng ấy thành một buổi gặp mặt thật sự ngoài đời nhỉ?</p>
-                <p>Mình muốn hẹn cậu vào một buổi chiều nhẹ nắng, ở một góc quán quen yên bình, nơi chúng mình có thể ngồi thong thả nhìn ngắm phố xá.</p>
-                
-                <div class="polaroid" style="transform: rotate(1.5deg);">
-                    <img src="qqqqqqq.jpg" alt="Ảnh 2">
+        <div class="page" id="page2">
+            <div class="card">
+                <h2>Một Chút Gần Gũi</h2>
+                <div class="subtitle">Getting Closer</div>
+                <div class="img-wrapper">
+                    <img src="../img/2222222222.jpg" alt="Hình ảnh thứ hai">
                 </div>
+                <p class="description">Còn đây là một khoảnh khắc khác của mình khi đang nhâm nhi một ly nước quen thuộc. Mình rất tò mò không biết những sở thích thường ngày của bạn như thế nào?</p>
+                <button class="btn" onclick="nextPage(3)">Xem Trang Cuối</button>
             </div>
         </div>
 
-        <div class="page" id="page-3">
-            <div class="page-number">Trang 3 / 4</div>
-            <div class="letter-content">
-                <p>Nơi mà chúng mình có thể trực tiếp nghe giọng nói của nhau, kể cho nhau nghe vài ba câu chuyện nhỏ nhặt thường ngày.</p>
-                <p>Nếu cậu cũng muốn có một buổi gặp mặt đầu tiên thật nhẹ nhàng và đáng nhớ như thế, hãy lật sang trang sau để phản hồi cho mình biết nhé!</p>
-                
-                <div class="polaroid" style="transform: rotate(-1deg);">
-                    <img src="111111111.jpg" alt="Ảnh 3">
+        <div class="page" id="page3">
+            <div class="card">
+                <h2>Lời Hẹn Gặp Mặt</h2>
+                <div class="subtitle">An Invitation</div>
+                <div class="img-wrapper">
+                    <img src="../img/qqqqqqq.jpg" alt="Hình ảnh thứ ba">
                 </div>
-                <p style="text-align: right; margin-top: 10px;">Chờ tin cậu <span class="heart">♥</span></p>
+                <p class="description">Và đây là tấm hình cuối cùng mình muốn chia sẻ. Nếu bạn cũng có chung mong muốn kết nối và cùng hẹn nhau một buổi trò chuyện trực tiếp, đừng ngần ngại nhắn cho mình nhé.</p>
+                <a href="https://zalo.me/0967264962" target="_blank" class="btn zalo-btn">Kết Nối Qua Zalo</a>
             </div>
         </div>
 
-        <div class="page" id="page-4">
-            <div class="page-number">Trang 4 / 4</div>
-            <div class="contact-page">
-                <h2 class="contact-title">Kết nối với mình</h2>
-                <p class="contact-text">
-                    Nếu cậu đồng ý với lời mời này,<br>
-                    hãy nhấn vào nút bên dưới để nhắn tin trực tiếp cho mình qua Zalo nha!
-                </p>
-                <a href="https://zalo.me/0967264962" target="_blank" class="zalo-btn">
-                    Mở Zalo nhắn cho mình ngay 💬
-                </a>
-            </div>
-        </div>
-
-        <div class="navigation-bar">
-            <button class="nav-btn" id="prev-btn" onclick="changePage(-1)" disabled>Trang trước</button>
-            <button class="nav-btn" id="next-btn" onclick="changePage(1)">Trang sau</button>
+        <div class="progress-dots">
+            <div class="dot active" id="dot1"></div>
+            <div class="dot" id="dot2"></div>
+            <div class="dot" id="dot3"></div>
         </div>
 
     </div>
 
     <script>
-        let currentPage = 1;
-        const totalPages = 4;
+        function nextPage(pageNumber) {
+            // 1. Ẩn tất cả các trang hiện tại
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            // 2. Hiện trang được chọn
+            document.getElementById('page' + pageNumber).classList.add('active');
 
-        function changePage(direction) {
-            // Ẩn trang hiện tại
-            document.getElementById(`page-${currentPage}`).classList.remove('active');
-            
-            // Tính toán trang mới
-            currentPage += direction;
-            
-            // Hiển thị trang mới
-            document.getElementById(`page-${currentPage}`).classList.add('active');
-            
-            // Cập nhật trạng thái các nút bấm
-            document.getElementById('prev-btn').disabled = (currentPage === 1);
-            
-            if (currentPage === totalPages) {
-                document.getElementById('next-btn').innerText = "Hết thư";
-                document.getElementById('next-btn').disabled = true;
-            } else {
-                document.getElementById('next-btn').innerText = "Trang sau";
-                document.getElementById('next-btn').disabled = false;
-            }
+            // 3. Cập nhật trạng thái các chấm chấm ở dưới
+            document.querySelectorAll('.dot').forEach(dot => {
+                dot.classList.remove('active');
+            });
+            document.getElementById('dot' + pageNumber).classList.add('active');
         }
     </script>
 

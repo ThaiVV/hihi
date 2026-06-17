@@ -1,471 +1,697 @@
 <!DOCTYPE html>
-<!--
-  THIỆP MỜI HẸN HÒ — file HTML duy nhất, không cần internet để chạy
-  (chỉ cần internet nếu muốn tải font Google, nếu không có mạng vẫn chạy được với font dự phòng)
-
-  CÁC CHỖ BẠN NÊN SỬA LẠI CHO ĐÚNG, tìm bằng từ khoá "SỬA Ở ĐÂY":
-   - Tên người được mời
-   - Tên người gửi (ký tên)
-   - Ngày / giờ / địa điểm hẹn
-   - Đoạn lời nhắn ở Trang 2 và Trang 4 (viết theo giọng của bạn cho thật)
--->
 <html lang="vi">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
-<title>Một lời mời nhỏ</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Caveat:wght@500;700&family=Work+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-<style>
-  :root{
-    --navy-deep:#0c0f24;
-    --navy:#171b3a;
-    --navy-soft:#232a52;
-    --parchment:#f7eedb;
-    --parchment-shade:#ece0c6;
-    --ink:#2f2a22;
-    --ink-soft:#5a5142;
-    --rose:#c97b63;
-    --rose-deep:#a85a45;
-    --gold:#cda339;
-    --sage:#8a9a76;
-  }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vé Hẹn Hò Kỳ Diệu - First Date Invitation</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Google Fonts: Playfair Display & Space Grotesk / Quicksand -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Quicksand:wght@300..700&family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background: radial-gradient(circle at center, #2e121a 0%, #120c1f 100%);
+            overflow-x: hidden;
+        }
+        .serif-font {
+            font-family: 'Playfair Display', serif;
+        }
+        .tech-font {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #ff5d8f;
+            border-radius: 10px;
+        }
 
-  *{box-sizing:border-box;}
-  html,body{
-    margin:0; padding:0; height:100%;
-    background:radial-gradient(ellipse at 50% -10%, var(--navy-soft), var(--navy-deep) 70%);
-    font-family:'Work Sans', sans-serif;
-    color:var(--ink);
-    overflow:hidden;
-  }
+        /* Glassmorphism utility card styling */
+        .glass-card {
+            background: rgba(25, 18, 31, 0.65);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+        }
 
-  /* ---------- bầu trời đêm nền ---------- */
-  #sky{
-    position:fixed; inset:0; z-index:0; overflow:hidden; pointer-events:none;
-  }
-  .star{
-    position:absolute; background:#fff; border-radius:50%;
-    opacity:.25; animation:twinkle ease-in-out infinite;
-  }
-  @keyframes twinkle{
-    0%,100%{opacity:.15; transform:scale(1);}
-    50%{opacity:.9; transform:scale(1.25);}
-  }
-  .moon{
-    position:absolute; top:6%; right:9%; width:clamp(46px,8vw,86px); height:clamp(46px,8vw,86px);
-    border-radius:50%;
-    background:radial-gradient(circle at 35% 35%, #fff8e3, #f3e2a8 55%, #e3cf85 100%);
-    box-shadow:0 0 50px 14px rgba(243,226,168,.35), 0 0 110px 40px rgba(243,226,168,.12);
-    opacity:.9;
-  }
+        /* Ambient glowing circles */
+        .glow-circle {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 93, 143, 0.15) 0%, rgba(255, 93, 143, 0) 70%);
+            filter: blur(40px);
+            pointer-events: none;
+            z-index: 1;
+        }
 
-  /* ---------- khung sân khấu chung ---------- */
-  .stage{
-    position:fixed; inset:0; display:flex; align-items:center; justify-content:center;
-    z-index:2;
-  }
+        /* Floating stardust animation */
+        @keyframes floatDust {
+            0% { transform: translateY(100vh) scale(0.5); opacity: 0; }
+            50% { opacity: 0.6; }
+            100% { transform: translateY(-10vh) scale(1.2); opacity: 0; }
+        }
+        .stardust {
+            position: absolute;
+            background: radial-gradient(circle, #fff 0%, rgba(255,255,255,0) 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: floatDust linear infinite;
+        }
 
-  /* ================= PHONG BÌ ================= */
-  #envelopeStage{ flex-direction:column; gap:22px; transition:opacity .5s ease, transform .5s ease; }
-  #envelopeStage.hide{ opacity:0; transform:scale(.92); pointer-events:none; }
+        /* Neon outline breathing effect */
+        @keyframes borderPulse {
+            0%, 100% { border-color: rgba(255, 93, 143, 0.2); box-shadow: 0 0 15px rgba(255, 93, 143, 0.1); }
+            50% { border-color: rgba(255, 93, 143, 0.5); box-shadow: 0 0 25px rgba(255, 93, 143, 0.3); }
+        }
+        .pulse-card {
+            animation: borderPulse 4s infinite ease-in-out;
+        }
 
-  .eyebrow{
-    font-family:'Work Sans', sans-serif; font-size:11px; letter-spacing:.22em; text-transform:uppercase;
-    color:#d8cfa3; opacity:.75; text-align:center;
-  }
+        /* Elegant Polaroid look for dark theme */
+        .neon-polaroid {
+            background: #181324;
+            padding: 10px;
+            padding-bottom: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.5);
+            transform: rotate(-1.5deg);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .neon-polaroid:hover {
+            transform: scale(1.05) rotate(1deg);
+            border-color: rgba(255, 93, 143, 0.6);
+            box-shadow: 0 16px 32px rgba(255, 93, 143, 0.25);
+        }
 
-  .envelope-wrap{ perspective:1400px; cursor:pointer; }
-  .envelope{
-    position:relative;
-    width:clamp(250px,62vw,340px);
-    height:clamp(168px,42vw,228px);
-    background:linear-gradient(160deg, var(--parchment), var(--parchment-shade));
-    border-radius:5px;
-    box-shadow:0 30px 60px -10px rgba(0,0,0,.55), 0 2px 0 rgba(255,255,255,.08) inset;
-    transform-style:preserve-3d;
-  }
-  .envelope::after{
-    content:"";
-    position:absolute; left:6%; right:6%; bottom:8%; height:1px;
-    background:linear-gradient(90deg, transparent, rgba(120,100,60,.35), transparent);
-  }
-  .flap{
-    position:absolute; top:0; left:0; width:100%; height:56%;
-    background:linear-gradient(150deg, #efe3c6, #e1cda1);
-    clip-path:polygon(0 0, 100% 0, 50% 100%);
-    transform-origin:top center;
-    transition:transform .85s cubic-bezier(.65,0,.35,1);
-    backface-visibility:hidden;
-    box-shadow:0 8px 16px rgba(0,0,0,.18);
-    z-index:3;
-  }
-  .flap.open{ transform:rotateX(178deg); }
-  .seal{
-    position:absolute; top:56%; left:50%; transform:translate(-50%,-50%);
-    width:clamp(40px,9vw,54px); height:clamp(40px,9vw,54px); border-radius:50%;
-    background:radial-gradient(circle at 35% 30%, var(--rose), var(--rose-deep) 70%);
-    box-shadow:0 6px 14px rgba(0,0,0,.4), inset 0 -3px 6px rgba(0,0,0,.25), inset 0 3px 5px rgba(255,255,255,.25);
-    display:flex; align-items:center; justify-content:center;
-    z-index:4; transition:opacity .4s ease, transform .4s ease;
-    font-family:'Cormorant Garamond', serif; color:#fbe9d8; font-size:clamp(16px,3.4vw,20px); font-style:italic;
-  }
-  .seal.gone{ opacity:0; transform:translate(-50%,-50%) scale(.4); }
+        /* Page change transitions */
+        .page-fade {
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
 
-  .open-hint{
-    font-family:'Caveat', cursive; font-size:clamp(17px,3vw,21px); color:#e9dfc0; opacity:.85;
-    text-align:center; animation:bob 2.4s ease-in-out infinite;
-  }
-  @keyframes bob{ 0%,100%{transform:translateY(0);} 50%{transform:translateY(6px);} }
-
-  /* ================= QUYỂN THIỆP ================= */
-  #bookStage{ opacity:0; transform:scale(.94); transition:opacity .6s ease, transform .6s ease; }
-  #bookStage.show{ opacity:1; transform:scale(1); }
-
-  .book{
-    position:relative;
-    width:clamp(300px,86vw,440px);
-    height:clamp(440px,78vh,620px);
-    perspective:1600px;
-  }
-  .leaf{
-    position:absolute; inset:0;
-    background:
-      radial-gradient(circle at 90% 6%, rgba(201,123,99,.07), transparent 40%),
-      linear-gradient(165deg, var(--parchment), var(--parchment-shade));
-    border-radius:10px;
-    box-shadow:0 30px 70px -15px rgba(0,0,0,.55);
-    padding:clamp(26px,6vw,42px) clamp(24px,6vw,36px);
-    display:flex; flex-direction:column;
-    transition:transform .68s cubic-bezier(.22,.61,.36,1), opacity .5s ease;
-    transform-origin:center;
-  }
-  .leaf::before{
-    content:""; position:absolute; inset:10px; border:1px solid rgba(120,95,55,.18); border-radius:6px; pointer-events:none;
-  }
-
-  .divider{ width:46px; height:1px; background:linear-gradient(90deg, transparent, var(--gold), transparent); margin:14px 0; opacity:.8;}
-  .label{ font-size:10.5px; letter-spacing:.2em; text-transform:uppercase; color:var(--rose-deep); opacity:.8; }
-
-  /* Trang 0 — bìa */
-  .leaf-cover{ align-items:flex-start; justify-content:center; gap:8px; }
-  .leaf-cover .greet{ font-family:'Cormorant Garamond', serif; font-style:italic; font-weight:500; font-size:clamp(26px,7vw,36px); color:var(--ink); }
-  .leaf-cover .sub{ font-family:'Caveat', cursive; font-size:clamp(19px,4.6vw,24px); color:var(--ink-soft); margin-top:2px; }
-  .leaf-cover .flourish{ margin-top:auto; font-size:13px; letter-spacing:.3em; color:var(--gold); opacity:.7;}
-
-  /* Trang 1 — lời nhắn */
-  .leaf-msg p{ font-family:'Cormorant Garamond', serif; font-size:clamp(17px,4vw,20px); line-height:1.75; color:var(--ink); margin:0; }
-  .leaf-msg .label{ margin-bottom:4px; }
-
-  /* Trang 2 — vé hẹn hò */
-  .ticket{ flex:1; display:flex; flex-direction:column; justify-content:center; gap:14px; }
-  .ticket-row{ display:flex; justify-content:space-between; align-items:baseline; border-bottom:1px dashed rgba(120,95,55,.3); padding-bottom:8px;}
-  .ticket-row .k{ font-size:11px; letter-spacing:.15em; text-transform:uppercase; color:var(--ink-soft); }
-  .ticket-row .v{ font-family:'Cormorant Garamond', serif; font-size:clamp(17px,4.2vw,21px); color:var(--ink); font-weight:600; text-align:right;}
-  .ticket-note{ font-family:'Caveat', cursive; font-size:17px; color:var(--ink-soft); margin-top:6px; }
-
-  /* Trang 3 — PS */
-  .leaf-ps{ justify-content:center; align-items:center; text-align:center; gap:10px; }
-  .leaf-ps .verse{ font-family:'Cormorant Garamond', serif; font-style:italic; font-size:clamp(18px,4.4vw,21px); line-height:1.7; color:var(--ink);}
-  .leaf-ps .ps{ font-family:'Caveat', cursive; font-size:19px; color:var(--rose-deep); margin-top:10px;}
-
-  /* Trang 4 — RSVP */
-  .leaf-rsvp{ justify-content:center; align-items:center; text-align:center; gap:16px; }
-  .leaf-rsvp h3{ font-family:'Cormorant Garamond', serif; font-weight:500; font-size:clamp(22px,5.6vw,28px); margin:0; color:var(--ink); }
-  .rsvp-btns{ display:flex; flex-direction:column; gap:12px; width:100%; max-width:260px; }
-  .rsvp-btn{
-    font-family:'Work Sans', sans-serif; font-size:14.5px; letter-spacing:.02em;
-    padding:13px 18px; border-radius:30px; border:none; cursor:pointer;
-    transition:transform .2s ease, box-shadow .2s ease, background .2s ease;
-  }
-  .rsvp-yes{ background:linear-gradient(135deg, var(--rose), var(--rose-deep)); color:#fff6ec; box-shadow:0 10px 24px -8px rgba(168,90,69,.6); font-weight:500; }
-  .rsvp-yes:hover{ transform:translateY(-2px); }
-  .rsvp-wait{ background:transparent; color:var(--ink-soft); border:1px solid rgba(90,80,60,.35); }
-  .rsvp-wait:hover{ background:rgba(90,80,60,.06); }
-  .rsvp-result{ display:none; flex-direction:column; align-items:center; gap:10px; }
-  .rsvp-result.show{ display:flex; }
-  .rsvp-result p{ font-family:'Cormorant Garamond', serif; font-size:clamp(17px,4.2vw,20px); line-height:1.7; color:var(--ink); margin:0;}
-  .signature{ font-family:'Caveat', cursive; font-size:24px; color:var(--rose-deep); margin-top:6px; }
-  .back-link{ font-size:12.5px; color:var(--ink-soft); text-decoration:underline; cursor:pointer; background:none; border:none; margin-top:4px; }
-
-  /* ---------- điều hướng ---------- */
-  .nav-arrow{
-    position:absolute; top:50%; transform:translateY(-50%);
-    width:38px; height:38px; border-radius:50%; border:none; cursor:pointer;
-    background:rgba(247,238,219,.12); color:#f3e7c9; font-size:18px;
-    display:flex; align-items:center; justify-content:center;
-    backdrop-filter:blur(2px);
-    transition:opacity .25s ease, background .2s ease;
-    z-index:5;
-  }
-  .nav-arrow:hover{ background:rgba(247,238,219,.22); }
-  .nav-arrow.prev{ left:-50px; }
-  .nav-arrow.next{ right:-50px; }
-  .nav-arrow.disabled{ opacity:0; pointer-events:none; }
-  @media (max-width:560px){
-    .nav-arrow.prev{ left:6px; }
-    .nav-arrow.next{ right:6px; }
-  }
-
-  .dots{ position:absolute; bottom:-34px; left:0; right:0; display:flex; justify-content:center; gap:9px; }
-  .dot{ width:7px; height:7px; border-radius:50%; background:rgba(243,231,201,.3); border:none; cursor:pointer; padding:0; transition:background .25s ease, transform .25s ease;}
-  .dot.active{ background:#f3e7c9; transform:scale(1.3); }
-
-  /* ---------- mảnh sao bay khi bấm "Có" ---------- */
-  .burst-particle{
-    position:fixed; z-index:9999; pointer-events:none; font-size:16px;
-    animation:burst 1s ease-out forwards;
-  }
-  @keyframes burst{
-    0%{ opacity:1; transform:translate(0,0) scale(1) rotate(0deg); }
-    100%{ opacity:0; transform:translate(var(--bx), var(--by)) scale(.4) rotate(180deg); }
-  }
-
-  @media (prefers-reduced-motion: reduce){
-    *{ animation-duration:.01ms !important; transition-duration:.01ms !important; }
-  }
-</style>
+        /* Ticket jagged border simulation */
+        .jagged-border {
+            background-image: radial-gradient(circle, transparent 6px, #181324 7px);
+            background-size: 16px 16px;
+        }
+    </style>
 </head>
-<body>
+<body class="min-h-screen flex items-center justify-center p-4 relative overflow-hidden text-neutral-200">
 
-<div id="sky"></div>
+    <!-- Ambient Glow Effects -->
+    <div class="glow-circle top-10 left-10" style="background: radial-gradient(circle, rgba(247, 160, 114, 0.15) 0%, rgba(247, 160, 114, 0) 70%);"></div>
+    <div class="glow-circle bottom-10 right-10"></div>
 
-<!-- ===== MÀN PHONG BÌ ===== -->
-<div class="stage" id="envelopeStage">
-  <div class="eyebrow">Một lời mời nhỏ</div>
-  <div class="envelope-wrap" id="envelopeWrap">
-    <div class="envelope">
-      <div class="seal" id="seal">♡</div>
-      <div class="flap" id="flap"></div>
+    <!-- Music Control -->
+    <div class="absolute top-4 right-4 z-50 flex items-center space-x-2">
+        <span class="text-[10px] tracking-widest text-neutral-400 uppercase font-bold bg-neutral-900/60 py-1 px-2.5 rounded-full border border-neutral-800 backdrop-blur">Lofi Soundtrack</span>
+        <button id="musicToggle" class="bg-neutral-900/80 backdrop-blur-md p-3 rounded-full shadow-lg border border-neutral-800 hover:border-pink-500 hover:bg-neutral-800 text-pink-400 transition-all flex items-center justify-center">
+            <i data-lucide="volume-x" class="w-5 h-5" id="musicIcon"></i>
+        </button>
     </div>
-  </div>
-  <div class="open-hint">chạm vào con dấu để mở thiệp</div>
-</div>
 
-<!-- ===== MÀN QUYỂN THIỆP ===== -->
-<div class="stage" id="bookStage">
-  <div class="book" id="book">
+    <!-- Star Dust Container -->
+    <div id="stardustContainer" class="absolute inset-0 pointer-events-none z-0"></div>
 
-    <button class="nav-arrow prev" id="prevBtn" aria-label="Trang trước">‹</button>
-    <button class="nav-arrow next" id="nextBtn" aria-label="Trang sau">›</button>
-
-    <!-- Trang 0: Bìa -->
-    <section class="leaf leaf-cover">
-      <span class="label">Gửi một người đặc biệt</span>
-      <div class="greet">Gửi Linh,</div> <!-- SỬA Ở ĐÂY: tên người được mời -->
-      <div class="sub">anh có một điều nho nhỏ muốn nói…</div>
-      <div class="flourish">✦ ✦ ✦</div>
-    </section>
-
-    <!-- Trang 1: Lời nhắn -->
-    <section class="leaf leaf-msg">
-      <span class="label">Trước khi vào chuyện chính</span>
-      <div class="divider"></div>
-      <p>
-        Dạo này, mỗi lần nói chuyện với em, anh đều thấy một ngày dài trở nên nhẹ nhõm hơn hẳn.
-        Anh đã nghĩ tới việc này nhiều lần rồi — rủ em đi đâu đó, chỉ hai đứa,
-        để xem cảm giác ấy có thật như anh nghĩ không.
-      </p>
-      <!-- SỬA Ở ĐÂY: viết lại đoạn này theo đúng giọng và câu chuyện của bạn -->
-    </section>
-
-    <!-- Trang 2: Vé hẹn hò -->
-    <section class="leaf">
-      <span class="label">Vé hẹn hò</span>
-      <div class="divider"></div>
-      <div class="ticket">
-        <div class="ticket-row"><span class="k">Ngày</span><span class="v">Thứ Bảy, 20.06</span></div> <!-- SỬA Ở ĐÂY -->
-        <div class="ticket-row"><span class="k">Giờ</span><span class="v">18:30</span></div> <!-- SỬA Ở ĐÂY -->
-        <div class="ticket-row"><span class="k">Nơi gặp</span><span class="v">Quán cà phê góc phố cũ</span></div> <!-- SỬA Ở ĐÂY -->
-        <div class="ticket-note">trang phục: thoải mái nhất có thể nha</div>
-      </div>
-    </section>
-
-    <!-- Trang 3: PS -->
-    <section class="leaf leaf-ps">
-      <span class="label">Tái bút</span>
-      <div class="verse">
-        "Nếu hôm đó trời có mưa,<br>
-        mình sẽ tìm một quán nhỏ để trốn cùng nhau."
-      </div>
-      <div class="ps">— chỉ là một suy nghĩ vui thôi, đừng lo nha</div>
-    </section>
-
-    <!-- Trang 4: RSVP -->
-    <section class="leaf leaf-rsvp">
-      <div id="rsvpQuestion">
-        <h3>Em nghĩ sao?</h3>
-        <div class="divider" style="margin:14px auto;"></div>
-        <div class="rsvp-btns">
-          <button class="rsvp-btn rsvp-yes" id="yesBtn">Có, mình rất muốn đi 🌙</button>
-          <button class="rsvp-btn rsvp-wait" id="waitBtn">Cho mình thêm chút thời gian</button>
+    <!-- Main Ticket/Scrapbook Container -->
+    <main class="w-full max-w-lg glass-card rounded-3xl p-6 md:p-8 relative z-10 flex flex-col justify-between min-h-[640px] pulse-card">
+        
+        <!-- Header: Ticket Branding -->
+        <div class="flex justify-between items-center pb-4 border-b border-white/5">
+            <div class="flex items-center space-x-1.5">
+                <span class="w-2.5 h-2.5 rounded-full bg-rose-500 animate-pulse"></span>
+                <span class="tech-font text-xs tracking-widest text-neutral-400 uppercase">First Date Pass • Code 1002</span>
+            </div>
+            <span class="tech-font text-xs font-bold text-rose-400 px-2 py-0.5 bg-rose-950/50 border border-rose-800/60 rounded">VÉ VÀO CỔNG ĐẶC BIỆT</span>
         </div>
-      </div>
 
-      <div class="rsvp-result" id="resultYes">
-        <p>Tuyệt vời. Vậy hẹn em thứ Bảy này nhé —<br>anh sẽ nhắn lại để chốt giờ giấc sớm.</p>
-        <div class="signature">— Quang</div> <!-- SỬA Ở ĐÂY: tên người gửi -->
-      </div>
+        <!-- Progress Indicator -->
+        <div class="flex justify-between items-center my-4">
+            <div class="text-[11px] uppercase tracking-wider text-neutral-400">Tiến trình kích hoạt</div>
+            <div class="flex space-x-1" id="dotsContainer">
+                <span class="w-2 h-2 rounded-full bg-rose-500 transition-all" id="dot1"></span>
+                <span class="w-2 h-2 rounded-full bg-neutral-700 transition-all" id="dot2"></span>
+                <span class="w-2 h-2 rounded-full bg-neutral-700 transition-all" id="dot3"></span>
+                <span class="w-2 h-2 rounded-full bg-neutral-700 transition-all" id="dot4"></span>
+            </div>
+        </div>
 
-      <div class="rsvp-result" id="resultWait">
-        <p>Không sao cả. Mình sẽ đợi tin từ em,<br>không vội đâu.</p>
-        <button class="back-link" id="backBtn">quay lại đọc thiệp</button>
-      </div>
-    </section>
+        <!-- MAIN MOUNTED PAGES -->
+        <div class="flex-grow flex items-center justify-center py-2 relative">
 
-    <div class="dots" id="dots"></div>
-  </div>
-</div>
+            <!-- PAGE 1: THE TICKET START -->
+            <div id="page1" class="page-fade w-full text-center space-y-6">
+                <!-- Polaroid Frame 1: 111111111.jpg -->
+                <div class="flex justify-center">
+                    <div class="neon-polaroid max-w-[200px]">
+                        <img src="111111111.jpg" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1518199266791-5375a83190b7?q=80&w=600';" class="w-full h-44 object-cover rounded-sm shadow-inner" alt="Kỷ niệm dễ thương">
+                        <p class="serif-font text-[11px] text-center text-neutral-400 mt-3 font-semibold tracking-wide">Nụ cười sưởi ấm lòng tớ... ✨</p>
+                    </div>
+                </div>
 
-<script>
-(function(){
-  /* ---------- bầu trời đêm ---------- */
-  const sky = document.getElementById('sky');
-  const starCount = window.innerWidth < 600 ? 50 : 90;
-  for(let i=0;i<starCount;i++){
-    const s = document.createElement('div');
-    s.className = 'star';
-    const size = (Math.random()*2 + 1).toFixed(1);
-    s.style.width = size+'px';
-    s.style.height = size+'px';
-    s.style.left = (Math.random()*100)+'%';
-    s.style.top = (Math.random()*100)+'%';
-    s.style.animationDuration = (2 + Math.random()*3).toFixed(2)+'s';
-    s.style.animationDelay = (Math.random()*4).toFixed(2)+'s';
-    sky.appendChild(s);
-  }
-  const moon = document.createElement('div');
-  moon.className = 'moon';
-  sky.appendChild(moon);
+                <div class="space-y-3">
+                    <h1 class="serif-font text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-rose-400 to-amber-300 leading-tight">
+                        Mở Vé Hẹn Hò <br>Dành Riêng Cho Cậu
+                    </h1>
+                    <p class="text-neutral-400 text-sm leading-relaxed px-4">
+                        Một lời mời bất ngờ được thiết kế kỳ công nhất quả đất. Hãy chạm vào bên dưới để bắt đầu hành trình đặc biệt nhé!
+                    </p>
+                </div>
 
-  /* ---------- mở phong bì ---------- */
-  const envelopeStage = document.getElementById('envelopeStage');
-  const bookStage = document.getElementById('bookStage');
-  const flap = document.getElementById('flap');
-  const seal = document.getElementById('seal');
-  const envelopeWrap = document.getElementById('envelopeWrap');
+                <button onclick="nextPage(2)" class="glow-button bg-gradient-to-r from-rose-500 to-amber-500 hover:from-rose-600 hover:to-amber-600 text-neutral-900 font-extrabold py-3.5 px-8 rounded-2xl shadow-xl transition-all transform hover:scale-105 active:scale-95 flex items-center justify-center space-x-2 mx-auto">
+                    <i data-lucide="key" class="w-5 h-5"></i>
+                    <span>Kích Hoạt Ngay</span>
+                </button>
+            </div>
 
-  envelopeWrap.addEventListener('click', openEnvelope);
+            <!-- PAGE 2: THE SECRETS & REASONS WITH PHOTO 2 -->
+            <div id="page2" class="page-fade w-full hidden space-y-5">
+                <div class="text-center">
+                    <span class="tech-font text-[10px] text-rose-400 tracking-widest uppercase border border-rose-950 px-2 py-0.5 bg-rose-950/20 rounded-full">Chương I: Vì Sao</span>
+                    <h2 class="serif-font text-2xl font-bold text-neutral-100 mt-1">Tại Sao Lại Là Một Cuộc Hẹn?</h2>
+                </div>
 
-  function openEnvelope(){
-    if(flap.classList.contains('open')) return;
-    flap.classList.add('open');
-    seal.classList.add('gone');
-    setTimeout(()=>{
-      envelopeStage.classList.add('hide');
-    }, 550);
-    setTimeout(()=>{
-      bookStage.classList.add('show');
-      render();
-    }, 750);
-  }
+                <!-- Polaroid Frame 2: 2f9886c5-b86c-4a26-bc41-92ede4d85c90.jpg -->
+                <div class="flex justify-center">
+                    <div class="neon-polaroid max-w-[190px]">
+                        <img src="2f9886c5-b86c-4a26-bc41-92ede4d85c90.jpg" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1498804103079-a6351b050096?q=80&w=600';" class="w-full h-36 object-cover rounded-sm shadow-inner" alt="Góc bình yên">
+                        <p class="serif-font text-[10px] text-center text-neutral-400 mt-2 font-semibold">Góc nhỏ bình yên tớ mộng mơ ☕</p>
+                    </div>
+                </div>
 
-  /* ---------- điều hướng trang ---------- */
-  const leaves = Array.from(document.querySelectorAll('.leaf'));
-  const dotsWrap = document.getElementById('dots');
-  const prevBtn = document.getElementById('prevBtn');
-  const nextBtn = document.getElementById('nextBtn');
-  let current = 0;
+                <!-- Story content style layout -->
+                <div class="space-y-3 px-1 text-sm">
+                    <div class="p-3 bg-neutral-900/60 rounded-xl border border-white/5 flex items-start space-x-3 shadow-md">
+                        <div class="p-2 bg-rose-500/10 rounded-lg text-rose-400">
+                            <i data-lucide="coffee" class="w-4 h-4"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-neutral-200">Tìm kiếm sự chân thành trực tiếp</h4>
+                            <p class="text-xs text-neutral-400 mt-0.5">Tớ muốn cùng cậu uống cốc trà ngọt, nhìn ngắm ánh mắt của cậu khi cười thay vì chỉ là những dòng tin nhắn khô khan.</p>
+                        </div>
+                    </div>
 
-  leaves.forEach((leaf, i)=>{
-    const d = document.createElement('button');
-    d.className = 'dot';
-    d.setAttribute('aria-label', 'Trang ' + (i+1));
-    d.addEventListener('click', ()=>{ current = i; render(); });
-    dotsWrap.appendChild(d);
-  });
-  const dots = Array.from(dotsWrap.children);
+                    <div class="p-3 bg-neutral-900/60 rounded-xl border border-white/5 flex items-start space-x-3 shadow-md">
+                        <div class="p-2 bg-amber-500/10 rounded-lg text-amber-400">
+                            <i data-lucide="heart-handshake" class="w-4 h-4"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-neutral-200">Tự vẽ nên một ngày thật trọn vẹn</h4>
+                            <p class="text-xs text-neutral-400 mt-0.5">Một khoảng thời gian bình lặng nhất, gác lại mọi âu lo ngoài kia để ta thực sự cảm nhận thế giới của nhau.</p>
+                        </div>
+                    </div>
+                </div>
 
-  function render(){
-    leaves.forEach((leaf, i)=>{
-      if(i === current){
-        leaf.style.transform = 'rotateY(0deg) translateX(0) scale(1)';
-        leaf.style.opacity = '1';
-        leaf.style.pointerEvents = 'auto';
-        leaf.style.zIndex = 2;
-      } else if(i < current){
-        leaf.style.transform = 'rotateY(-22deg) translateX(-46px) scale(.94)';
-        leaf.style.opacity = '0';
-        leaf.style.pointerEvents = 'none';
-        leaf.style.zIndex = 1;
-      } else {
-        leaf.style.transform = 'rotateY(22deg) translateX(46px) scale(.94)';
-        leaf.style.opacity = '0';
-        leaf.style.pointerEvents = 'none';
-        leaf.style.zIndex = 1;
-      }
-    });
-    dots.forEach((d,i)=> d.classList.toggle('active', i===current));
-    prevBtn.classList.toggle('disabled', current===0);
-    nextBtn.classList.toggle('disabled', current===leaves.length-1);
-  }
+                <div class="flex justify-between items-center pt-2">
+                    <button onclick="nextPage(1)" class="text-neutral-500 hover:text-neutral-300 text-xs font-semibold flex items-center space-x-1 transition-all">
+                        <i data-lucide="chevron-left" class="w-4 h-4"></i>
+                        <span>Quay lại</span>
+                    </button>
+                    <button onclick="nextPage(3)" class="bg-rose-500/20 border border-rose-800/60 hover:bg-rose-500 hover:text-neutral-900 text-rose-400 font-bold py-2 px-5 rounded-xl text-xs tracking-wider uppercase transition-all flex items-center space-x-1.5">
+                        <span>Lộ trình bí mật</span>
+                        <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </div>
 
-  function next(){ if(current < leaves.length-1){ current++; render(); } }
-  function prev(){ if(current > 0){ current--; render(); } }
+            <!-- PAGE 3: ROUTE / AGENDA WITH PHOTO 3 (qqqqqqq.jpg) -->
+            <div id="page3" class="page-fade w-full hidden space-y-5">
+                <div class="text-center">
+                    <span class="tech-font text-[10px] text-amber-400 tracking-widest uppercase border border-amber-950 px-2 py-0.5 bg-amber-950/20 rounded-full">Chương II: Hành Trình</span>
+                    <h2 class="serif-font text-2xl font-bold text-neutral-100 mt-1">Lộ Trình Trải Nghiệm Mơ Mộng</h2>
+                </div>
 
-  prevBtn.addEventListener('click', prev);
-  nextBtn.addEventListener('click', next);
+                <!-- Polaroid Frame 3: qqqqqqq.jpg (Outdoor cafe, sunglasses, beautiful cardigan) -->
+                <div class="flex justify-center">
+                    <div class="neon-polaroid max-w-[180px]">
+                        <img src="qqqqqqq.jpg" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1517841905240-472988babdf9?q=80&w=600';" class="w-full h-36 object-cover rounded-sm shadow-inner" alt="Ngoại cảnh mơ mộng">
+                        <p class="serif-font text-[10px] text-center text-neutral-400 mt-2 font-semibold">Cùng đi trốn thế gian thôi... 🥰</p>
+                    </div>
+                </div>
 
-  document.addEventListener('keydown', (e)=>{
-    if(!bookStage.classList.contains('show')) return;
-    if(e.key === 'ArrowRight') next();
-    if(e.key === 'ArrowLeft') prev();
-  });
+                <!-- Minimalist Vertical Timeline -->
+                <div class="relative pl-6 space-y-4 before:content-[''] before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-[1px] before:bg-neutral-800">
+                    
+                    <div class="relative">
+                        <span class="absolute left-[-21px] top-1 w-3.5 h-3.5 rounded-full bg-rose-500 border-4 border-neutral-950"></span>
+                        <div class="text-xs">
+                            <span class="font-extrabold text-rose-400">Trạm 1: Điểm Hẹn Ấm Cúng</span>
+                            <p class="text-neutral-400 text-[10px] mt-0.5">Một quán nước mộc mạc, yên ả ngập tràn âm nhạc và hương cafe lãng đãng.</p>
+                        </div>
+                    </div>
 
-  /* lướt chạm trên di động */
-  let touchX = null;
-  const book = document.getElementById('book');
-  book.addEventListener('touchstart', (e)=>{ touchX = e.touches[0].clientX; });
-  book.addEventListener('touchend', (e)=>{
-    if(touchX === null) return;
-    const dx = e.changedTouches[0].clientX - touchX;
-    if(Math.abs(dx) > 40){ dx < 0 ? next() : prev(); }
-    touchX = null;
-  });
+                    <div class="relative">
+                        <span class="absolute left-[-21px] top-1 w-3.5 h-3.5 rounded-full bg-amber-400 border-4 border-neutral-950"></span>
+                        <div class="text-xs">
+                            <span class="font-extrabold text-amber-400">Trạm 2: Quà Tặng Bí Mật</span>
+                            <p class="text-neutral-400 text-[10px] mt-0.5">Món quà nhỏ tớ tự tay gói ghém tỉ mỉ nhất gửi tặng cậu ngay từ phút đầu tiên chạm mặt.</p>
+                        </div>
+                    </div>
 
-  /* ---------- RSVP ---------- */
-  const yesBtn = document.getElementById('yesBtn');
-  const waitBtn = document.getElementById('waitBtn');
-  const backBtn = document.getElementById('backBtn');
-  const rsvpQuestion = document.getElementById('rsvpQuestion');
-  const resultYes = document.getElementById('resultYes');
-  const resultWait = document.getElementById('resultWait');
+                    <div class="relative">
+                        <span class="absolute left-[-21px] top-1 w-3.5 h-3.5 rounded-full bg-emerald-400 border-4 border-neutral-950"></span>
+                        <div class="text-xs">
+                            <span class="font-extrabold text-emerald-400">Trạm 3: Dạo Phố & Chụp Ảnh</span>
+                            <p class="text-neutral-400 text-[10px] mt-0.5">Lưu lại những tấm ảnh Polaroid thật xinh của hai tụi mình làm cột mốc đầu tiên.</p>
+                        </div>
+                    </div>
 
-  yesBtn.addEventListener('click', (e)=>{
-    burst(e.clientX, e.clientY);
-    rsvpQuestion.style.display = 'none';
-    resultYes.classList.add('show');
-  });
+                </div>
 
-  waitBtn.addEventListener('click', ()=>{
-    rsvpQuestion.style.display = 'none';
-    resultWait.classList.add('show');
-  });
+                <div class="flex justify-between items-center pt-2">
+                    <button onclick="nextPage(2)" class="text-neutral-500 hover:text-neutral-300 text-xs font-semibold flex items-center space-x-1 transition-all">
+                        <i data-lucide="chevron-left" class="w-4 h-4"></i>
+                        <span>Quay lại</span>
+                    </button>
+                    <button onclick="nextPage(4)" class="glow-button bg-rose-500/20 border border-rose-800/60 hover:bg-rose-500 hover:text-neutral-900 text-rose-400 font-bold py-2 px-5 rounded-xl text-xs tracking-wider uppercase transition-all flex items-center space-x-1.5">
+                        <span>Chương quyết định</span>
+                        <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </div>
 
-  backBtn.addEventListener('click', ()=>{
-    resultWait.classList.remove('show');
-    rsvpQuestion.style.display = 'block';
-    current = 1; render();
-  });
+            <!-- PAGE 4: THE BIG INTERACTIVE QUESTION -->
+            <div id="page4" class="page-fade w-full hidden space-y-6 text-center">
+                <div class="space-y-1.5">
+                    <div class="text-5xl animate-bounce">🙈💌</div>
+                    <span class="tech-font text-[10px] text-amber-400 tracking-widest uppercase border border-amber-950 px-2.5 py-0.5 bg-amber-950/20 rounded-full">Lời Ngỏ Chân Thành</span>
+                    <h2 class="serif-font text-2xl md:text-3xl font-extrabold text-neutral-100 mt-2 leading-tight">
+                        Cậu Đồng Ý <br> Đi Hẹn Hò Cùng Tớ Nhé?
+                    </h2>
+                    <p class="text-xs text-neutral-400 italic">Chiếc vé đang đợi người thương sở hữu...</p>
+                </div>
 
-  function burst(x, y){
-    const glyphs = ['✦','♡','✧','☾'];
-    for(let i=0;i<16;i++){
-      const p = document.createElement('div');
-      p.className = 'burst-particle';
-      p.textContent = glyphs[Math.floor(Math.random()*glyphs.length)];
-      p.style.left = x+'px';
-      p.style.top = y+'px';
-      p.style.color = Math.random() > .5 ? '#cda339' : '#c97b63';
-      const angle = Math.random()*Math.PI*2;
-      const dist = 60 + Math.random()*90;
-      p.style.setProperty('--bx', (Math.cos(angle)*dist)+'px');
-      p.style.setProperty('--by', (Math.sin(angle)*dist - 30)+'px');
-      document.body.appendChild(p);
-      setTimeout(()=> p.remove(), 1050);
-    }
-  }
-})();
-</script>
+                <!-- Interactive Yes/No Area -->
+                <div class="relative min-h-[140px] flex flex-col items-center justify-center space-y-4" id="askContainer">
+                    <button id="btnYes" onclick="celebrateAndRedirect()" class="glow-button w-48 py-4 bg-gradient-to-r from-rose-500 to-amber-500 hover:from-rose-600 hover:to-amber-600 text-neutral-900 font-extrabold text-base rounded-2xl shadow-2xl transition-all transform active:scale-95 z-20 flex items-center justify-center space-x-2">
+                        <i data-lucide="heart" class="w-5 h-5 fill-current"></i>
+                        <span>Đồng Ý Luôn! 💖</span>
+                    </button>
+                    
+                    <button id="btnNo" onmouseover="dodgeButton()" onclick="dodgeButton()" class="absolute w-28 py-2 bg-neutral-900 hover:bg-neutral-800 text-neutral-400 border border-neutral-800 font-semibold text-xs rounded-xl shadow-lg transition-all duration-200 z-10">
+                        Hông nha 😜
+                    </button>
+                </div>
+
+                <div class="pt-2 border-t border-white/5 flex justify-start">
+                    <button onclick="nextPage(3)" class="text-neutral-500 hover:text-neutral-300 text-xs font-semibold flex items-center space-x-1 transition-all">
+                        <i data-lucide="chevron-left" class="w-3.5 h-3.5"></i>
+                        <span>Xem lại lộ trình</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- PAGE 5: CELEBRATION / REDIRECTING -->
+            <div id="page5" class="page-fade w-full hidden space-y-6 text-center">
+                <div class="relative inline-block">
+                    <div class="w-24 h-24 mx-auto bg-rose-500/10 rounded-full border border-rose-500/30 flex items-center justify-center text-rose-400 animate-pulse">
+                        <i data-lucide="party-popper" class="w-12 h-12"></i>
+                    </div>
+                </div>
+
+                <div class="space-y-3">
+                    <h2 class="serif-font text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-rose-400 to-amber-300">
+                        Ôi, Tuyệt Vời Quá! 🎉
+                    </h2>
+                    <p class="text-neutral-300 text-sm md:text-base px-2">
+                        Tớ thực sự rất hạnh phúc! Cảm ơn cậu đã đồng ý. 
+                    </p>
+                    <div class="bg-neutral-900/80 p-4 rounded-2xl border border-white/5 inline-block text-left text-xs text-rose-400 space-y-2 max-w-sm mx-auto shadow-inner">
+                        <p class="font-bold flex items-center text-neutral-200"><i data-lucide="loader" class="w-4 h-4 mr-1.5 animate-spin"></i> Đang tự động chuyển hướng...</p>
+                        <p class="text-neutral-400">Hệ thống đang mở liên kết Zalo của tụi mình để cùng chuẩn bị cho cuộc hẹn tuyệt vời nhất hén! 🥰</p>
+                    </div>
+                </div>
+
+                <!-- Instant Redirect Button -->
+                <div class="space-y-2 pt-2">
+                    <button onclick="directRedirect()" class="w-full max-w-xs bg-sky-600 hover:bg-sky-500 text-white font-bold py-3.5 px-6 rounded-2xl shadow-lg transition-all flex items-center justify-center space-x-2 mx-auto">
+                        <i data-lucide="external-link" class="w-5 h-5"></i>
+                        <span>Đến Zalo Trực Tiếp</span>
+                    </button>
+                    <p class="text-[10px] text-neutral-500 italic">Nếu trình duyệt không tự chuyển hướng, vui lòng chạm nút xanh phía trên.</p>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Footnote / Ticket Stub Section -->
+        <div class="pt-4 border-t border-dashed border-neutral-800 flex justify-between items-center text-[10px] text-neutral-500 font-bold tech-font">
+            <span class="uppercase tracking-widest">Serial: #0967264962</span>
+            <span id="pageIndicator" class="bg-neutral-950 border border-neutral-800 px-3 py-1 rounded-full text-rose-400">Hành trình: 1 / 4</span>
+        </div>
+
+    </main>
+
+    <!-- Beautiful Custom Notification Modal -->
+    <div id="customModal" class="fixed inset-0 bg-neutral-950/80 backdrop-blur-md hidden items-center justify-center z-50 p-4">
+        <div class="bg-neutral-900 rounded-3xl p-6 max-w-sm w-full text-center space-y-4 shadow-2xl border border-white/10 transform scale-95 transition-all duration-300" id="modalContent">
+            <div class="w-14 h-14 bg-rose-500/10 rounded-full flex items-center justify-center text-rose-400 mx-auto border border-rose-500/20">
+                <i data-lucide="music" class="w-6 h-6"></i>
+            </div>
+            <h3 class="font-bold text-lg text-neutral-100" id="modalTitle">Thông báo</h3>
+            <p class="text-sm text-neutral-400 leading-relaxed" id="modalText">Nội dung thông báo ở đây.</p>
+            <button onclick="closeModal()" class="w-full py-3 bg-gradient-to-r from-rose-500 to-amber-500 hover:from-rose-600 hover:to-amber-600 text-neutral-900 font-bold rounded-2xl shadow transition-all">
+                Tuyệt cú mèo!
+            </button>
+        </div>
+    </div>
+
+    <!-- Web Audio API Synthesizer (Lofi Piano Chords Creator) -->
+    <script>
+        // Init Lucide Icons
+        lucide.createIcons();
+
+        // Stardust generator
+        function createStardust() {
+            const container = document.getElementById('stardustContainer');
+            const maxDust = 30;
+            
+            setInterval(() => {
+                if (container.childElementCount >= maxDust) return;
+
+                const star = document.createElement('div');
+                star.classList.add('stardust');
+                
+                const size = Math.random() * 4 + 2; // 2px to 6px
+                const leftPos = Math.random() * 100; // 0% to 100%
+                const duration = Math.random() * 8 + 6; // 6s to 14s
+                const delay = Math.random() * 3;
+                
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                star.style.left = `${leftPos}%`;
+                star.style.animationDuration = `${duration}s`;
+                star.style.animationDelay = `${delay}s`;
+                
+                // Varied pastel stardust colors
+                const colors = ['rgba(255, 255, 255, 0.5)', 'rgba(255, 93, 143, 0.4)', 'rgba(247, 160, 114, 0.4)', 'rgba(255, 235, 150, 0.3)'];
+                star.style.background = colors[Math.floor(Math.random() * colors.length)];
+                
+                container.appendChild(star);
+                
+                setTimeout(() => { star.remove(); }, (duration + delay) * 1000);
+            }, 600);
+        }
+
+        // Web Audio Synth Core Setup
+        let audioCtx = null;
+        let melodyInterval = null;
+        let isPlaying = false;
+
+        const musicToggle = document.getElementById('musicToggle');
+        const musicIcon = document.getElementById('musicIcon');
+
+        // Pentatonic sweet sunset lofi chords & melodies
+        const softPads = [
+            // C4, E4, G4, A4, D5
+            [261.63, 329.63, 392.00, 440.00], // Am7 / C chord feeling
+            [293.66, 349.23, 440.00, 587.33], // Dm9 / F chord feeling
+            [329.63, 392.00, 493.88, 587.33]  // Em7 / G chord feeling
+        ];
+        
+        function playSynthesizedLofiChord(chordIndex) {
+            if (!audioCtx) return;
+            const chords = softPads[chordIndex];
+            const now = audioCtx.currentTime;
+            
+            chords.forEach(freq => {
+                const osc = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+                
+                osc.type = 'sine'; // Pure sweet bell-like sound
+                osc.frequency.setValueAtTime(freq, now);
+                
+                gainNode.gain.setValueAtTime(0, now);
+                gainNode.gain.linearRampToValueAtTime(0.015, now + 0.4); // extremely soft pad volume
+                gainNode.gain.exponentialRampToValueAtTime(0.0001, now + 3.5); // long gentle decay
+                
+                osc.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+                
+                osc.start(now);
+                osc.stop(now + 3.6);
+            });
+        }
+
+        function playLofiTheme() {
+            let step = 0;
+            const stepDuration = 4000; // Each chord stays for 4s
+            
+            const runLoop = () => {
+                if (!isPlaying) return;
+                playSynthesizedLofiChord(step % 3);
+                step++;
+            };
+            
+            runLoop();
+            melodyInterval = setInterval(runLoop, stepDuration);
+        }
+
+        function startMusic() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            isPlaying = true;
+            musicIcon.classList.remove('text-neutral-500', 'text-pink-400');
+            musicIcon.setAttribute('data-lucide', 'volume-2');
+            musicIcon.classList.add('text-rose-500');
+            lucide.createIcons();
+            playLofiTheme();
+        }
+
+        function stopMusic() {
+            isPlaying = false;
+            if (melodyInterval) {
+                clearInterval(melodyInterval);
+                melodyInterval = null;
+            }
+            musicIcon.setAttribute('data-lucide', 'volume-x');
+            musicIcon.classList.remove('text-rose-500');
+            musicIcon.classList.add('text-pink-400');
+            lucide.createIcons();
+        }
+
+        musicToggle.addEventListener('click', () => {
+            if (isPlaying) {
+                stopMusic();
+            } else {
+                startMusic();
+                showCustomModal("🎵 Âm Nhạc Thư Giãn", "Bản giao hưởng lofi mộc mạc và du dương đã được bật lên để tạo không gian ấm cúng nhất cho hai tụi mình hén.");
+            }
+        });
+
+        // Navigation Controller
+        let currentPage = 1;
+        const totalPages = 4;
+
+        function updateProgress() {
+            const pageIndicator = document.getElementById('pageIndicator');
+            
+            for (let i = 1; i <= 4; i++) {
+                const dot = document.getElementById(`dot${i}`);
+                if (dot) {
+                    if (i <= currentPage) {
+                        dot.className = "w-4 h-2 rounded-full bg-rose-500 transition-all duration-300";
+                    } else {
+                        dot.className = "w-2 h-2 rounded-full bg-neutral-700 transition-all duration-300";
+                    }
+                }
+            }
+
+            if (currentPage <= totalPages) {
+                pageIndicator.textContent = `Hành trình: ${currentPage} / ${totalPages}`;
+                pageIndicator.style.display = 'inline-block';
+            } else {
+                pageIndicator.style.display = 'none';
+            }
+        }
+
+        function nextPage(pageNumber) {
+            // Hide all pages with class cleanup
+            for (let i = 1; i <= 5; i++) {
+                const page = document.getElementById(`page${i}`);
+                if (page) {
+                    page.classList.add('hidden');
+                }
+            }
+
+            // Show and fade in target page
+            const targetPage = document.getElementById(`page${pageNumber}`);
+            if (targetPage) {
+                targetPage.classList.remove('hidden');
+                targetPage.style.opacity = 0;
+                targetPage.style.transform = "translateY(10px)";
+                setTimeout(() => {
+                    targetPage.style.opacity = 1;
+                    targetPage.style.transform = "translateY(0)";
+                }, 50);
+            }
+
+            currentPage = pageNumber;
+            updateProgress();
+        }
+
+        // Dodging No Button logic
+        let dodgeCount = 0;
+        const funnyMessages = [
+            "Ui chao, trượt tay tí thui bấm lại nút hồng đi nà 😜",
+            "Nút này bị khoá rùi cậu ưi!",
+            "Tớ làm chiếc nút này tàng hình bây giờ á hihi!",
+            "Đồng ý lẹ lẹ đi nà, thương thương!",
+            "Gia tài của tớ chỉ có một tấm vé này thui á!"
+        ];
+
+        function dodgeButton() {
+            const btnNo = document.getElementById('btnNo');
+            const askContainer = document.getElementById('askContainer');
+            
+            const containerRect = askContainer.getBoundingClientRect();
+            const btnRect = btnNo.getBoundingClientRect();
+
+            const maxX = containerRect.width - btnRect.width;
+            const maxY = containerRect.height - btnRect.height;
+
+            let randomX = Math.floor(Math.random() * maxX);
+            let randomY = Math.floor(Math.random() * (maxY - 20));
+
+            btnNo.style.position = 'absolute';
+            btnNo.style.left = `${randomX}px`;
+            btnNo.style.top = `${randomY}px`;
+
+            dodgeCount++;
+            if (dodgeCount % 3 === 0) {
+                const msg = funnyMessages[Math.floor(Math.random() * funnyMessages.length)];
+                showCustomModal("Thách cậu chạm được á!", msg);
+            }
+        }
+
+        // YES Action & Automated Zalo redirection
+        function celebrateAndRedirect() {
+            nextPage(5);
+            createConfetti();
+            
+            // Success audio chime
+            if (audioCtx) {
+                const now = audioCtx.currentTime;
+                playTone(440.00, 0.15, 'sine', 0.1);
+                setTimeout(() => { playTone(554.37, 0.15, 'sine', 0.1); }, 100);
+                setTimeout(() => { playTone(659.25, 0.15, 'sine', 0.1); }, 200);
+                setTimeout(() => { playTone(880.00, 0.4, 'sine', 0.15); }, 300);
+            }
+
+            // Redirect automatically after 3.5 seconds
+            setTimeout(() => {
+                directRedirect();
+            }, 3500);
+        }
+
+        function directRedirect() {
+            window.location.href = "https://zalo.me/0967264962";
+        }
+
+        function restart() {
+            dodgeCount = 0;
+            const btnNo = document.getElementById('btnNo');
+            btnNo.style.position = 'relative';
+            btnNo.style.left = 'auto';
+            btnNo.style.top = 'auto';
+            nextPage(1);
+        }
+
+        function sendMessenger() {
+            directRedirect();
+        }
+
+        // Tone Synth for successes
+        function playTone(freq, duration, type = 'sine', volume = 0.05) {
+            if (!audioCtx) return;
+            try {
+                const osc = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+                osc.type = type;
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                
+                gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+                gainNode.gain.linearRampToValueAtTime(volume, audioCtx.currentTime + 0.05);
+                gainNode.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+                
+                osc.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + duration);
+            } catch(e) {}
+        }
+
+        // Celebration Confetti
+        function createConfetti() {
+            const colors = ['#f7a072', '#ff85a2', '#ff4d6d', '#ffeb3b', '#4caf50', '#00bcd4'];
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.classList.add('confetti');
+                confetti.style.left = `${Math.random() * 100}vw`;
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animationDuration = `${Math.random() * 2 + 1.5}s`;
+                confetti.style.animationDelay = `${Math.random() * 0.5}s`;
+                confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0%';
+                
+                document.body.appendChild(confetti);
+                
+                setTimeout(() => { confetti.remove(); }, 3500);
+            }
+        }
+
+        // Custom Modal UI helper
+        function showCustomModal(title, text) {
+            const modal = document.getElementById('customModal');
+            const modalContent = document.getElementById('modalContent');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalText = document.getElementById('modalText');
+
+            modalTitle.innerText = title;
+            modalText.innerText = text;
+
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            
+            setTimeout(() => {
+                modalContent.classList.remove('scale-95', 'opacity-0');
+                modalContent.classList.add('scale-100', 'opacity-100');
+            }, 10);
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('customModal');
+            const modalContent = document.getElementById('modalContent');
+            
+            modalContent.classList.remove('scale-100', 'opacity-100');
+            modalContent.classList.add('scale-95', 'opacity-0');
+            
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }, 200);
+        }
+
+        // Initialize Onload
+        window.onload = function() {
+            createStardust();
+            updateProgress();
+        };
+    </script>
 </body>
 </html>

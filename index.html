@@ -3,250 +3,133 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thư Mời Gặp Mặt</title>
+    <title>Gửi haha</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --bg-dark: #0f1115;
-            --accent-gold: #c5a880;
-            --text-light: #f5efe6;
-            --text-muted: #a0aab2;
+            --bg-dark: #0a0c10;
+            --card-bg: #131722;
+            --accent-gold: #d4af37;
+            --accent-soft: #c5a880;
+            --text-light: #f8f9fa;
+            --text-muted: #94a3b8;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
             background-color: var(--bg-dark);
             color: var(--text-light);
-            overflow: hidden; /* Ẩn thanh cuộn để tạo cảm giác ứng dụng chuyên nghiệp */
+            overflow: hidden;
+            display: flex; justify-content: center; align-items: center;
+            height: 100vh; width: 100vw;
         }
 
-        /* Khung chứa các trang */
-        .page-container {
-            position: relative;
-            width: 100vw;
-            height: 100vh;
-        }
+        .page-container { position: relative; width: 100%; height: 100%; }
 
-        /* Định dạng chung cho mỗi trang */
         .page {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            opacity: 0;
-            pointer-events: none;
-            transform: scale(1.05);
-            transition: opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1), 
-                        transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+            position: absolute; width: 100%; height: 100%;
+            display: flex; justify-content: center; align-items: center;
+            padding: 24px; opacity: 0; pointer-events: none;
+            transform: translateY(40px) scale(0.96);
+            transition: all 0.9s cubic-bezier(0.34, 1.56, 0.64, 1);
             z-index: 1;
         }
 
-        /* Trang đang được hiển thị chủ động */
-        .page.active {
-            opacity: 1;
-            pointer-events: auto;
-            transform: scale(1);
-            z-index: 2;
-        }
+        .page.active { opacity: 1; pointer-events: auto; transform: translateY(0) scale(1); z-index: 2; }
 
-        /* Khung nội dung bên trong mỗi trang */
         .card {
-            background: #191f28;
-            width: 100%;
-            max-width: 500px;
-            border-radius: 24px;
-            border: 1px solid rgba(197, 168, 128, 0.15);
-            padding: 30px;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            background: var(--card-bg); width: 100%; max-width: 480px;
+            border-radius: 28px; border: 1px solid rgba(197, 168, 128, 0.12);
+            padding: 40px; box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
             text-align: center;
         }
 
-        .card h2 {
-            font-family: 'Playfair Display', serif;
-            color: var(--accent-gold);
-            font-size: 26px;
-            margin-bottom: 8px;
-            letter-spacing: 1px;
-        }
+        h2 { font-family: 'Playfair Display', serif; color: var(--accent-gold); font-size: 28px; margin-bottom: 10px; }
+        .subtitle { font-family: 'Playfair Display', serif; font-style: italic; color: var(--text-muted); margin-bottom: 25px; }
+        .letter-text { font-family: 'Playfair Display', serif; font-style: italic; line-height: 1.8; color: #cbd5e1; margin-bottom: 30px; }
 
-        .card .subtitle {
-            font-family: 'Playfair Display', serif;
-            font-style: italic;
-            color: var(--text-muted);
-            font-size: 14px;
-            margin-bottom: 20px;
-        }
+        .img-wrapper { width: 100%; height: 360px; border-radius: 20px; overflow: hidden; margin-bottom: 24px; }
+        .img-wrapper img { width: 100%; height: 100%; object-fit: cover; }
 
-        /* Khung ảnh */
-        .img-wrapper {
-            width: 100%;
-            height: 380px;
-            border-radius: 16px;
-            overflow: hidden;
-            margin-bottom: 25px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
+        .description { font-size: 15px; color: #cbd5e1; line-height: 1.7; margin-bottom: 28px; font-weight: 300; }
 
-        .img-wrapper img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .card .description {
-            font-size: 15px;
-            color: #d1d5db;
-            line-height: 1.6;
-            margin-bottom: 25px;
-            font-weight: 300;
-        }
-
-        /* Hệ thống nút bấm cao cấp */
         .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            background: transparent;
-            color: var(--accent-gold);
-            border: 1px solid var(--accent-gold);
-            padding: 12px 35px;
-            font-size: 14px;
-            font-weight: 500;
-            border-radius: 30px;
-            cursor: pointer;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            transition: all 0.4s ease;
-            text-decoration: none;
+            display: inline-flex; align-items: center; justify-content: center;
+            background: transparent; color: var(--accent-soft);
+            border: 1px solid rgba(197, 168, 128, 0.4); padding: 14px 40px;
+            font-size: 13px; font-weight: 500; border-radius: 30px;
+            text-transform: uppercase; cursor: pointer; transition: 0.4s; text-decoration: none;
         }
+        .btn:hover { background: var(--accent-gold); color: var(--bg-dark); border-color: var(--accent-gold); }
 
-        .btn:hover {
-            background: var(--accent-gold);
-            color: var(--bg-dark);
-            box-shadow: 0 8px 20px rgba(197, 168, 128, 0.3);
-            font-weight: 600;
-        }
-
-        .zalo-btn {
-            background: var(--accent-gold);
-            color: var(--bg-dark);
-            font-weight: 600;
-        }
-        
-        .zalo-btn:hover {
-            background: #e5c9a3;
-            color: var(--bg-dark);
-        }
-
-        /* Thanh tiến trình (Progress Dots) ở góc dưới */
-        .progress-dots {
-            position: absolute;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 12px;
-            z-index: 10;
-        }
-
-        .dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.2);
-            transition: all 0.3s ease;
-        }
-
-        .dot.active {
-            background: var(--accent-gold);
-            width: 24px;
-            border-radius: 4px;
-        }
-
-        /* Tối ưu thiết bị di động */
-        @media (max-width: 480px) {
-            .card { padding: 20px; }
-            .img-wrapper { height: 300px; }
-            .card h2 { font-size: 22px; }
-        }
+        .progress-dots { position: absolute; bottom: 35px; left: 50%; transform: translateX(-50%); display: flex; gap: 10px; }
+        .dot { width: 7px; height: 7px; border-radius: 50%; background: rgba(255, 255, 255, 0.15); transition: 0.4s; }
+        .dot.active { background: var(--accent-gold); width: 20px; border-radius: 10px; }
     </style>
 </head>
 <body>
 
     <div class="page-container">
 
-        <div class="page active" id="page1">
+        <div class="page active" id="page0">
+            <div class="card">
+                <h2>Gửi cậu,</h2>
+                <div class="subtitle">A Personal Invitation</div>
+                <div class="letter-text">
+                    "Giữa những nhịp sống hối hả, đôi khi mình mong tìm được một khoảng lặng để kết nối chân thành. Mình đã gói ghém những cảm xúc và khoảnh khắc đáng nhớ vào những trang tiếp theo..."
+                </div>
+                <button class="btn" onclick="nextPage(1)">Mở thư của mình</button>
+            </div>
+        </div>
+
+        <div class="page" id="page1">
             <div class="card">
                 <h2>Lời Chào Đầu</h2>
-                <div class="subtitle">The Beginning</div>
-                <div class="img-wrapper">
-                    <img src="img/111111111.jpg" alt="Hình ảnh thứ nhất">
-                </div>
-                <p class="description">Chào bạn, có lẽ cuộc gặp gỡ nào cũng cần một chút không gian để mở lời. Mình gửi tới bạn tấm hình đầu tiên thay cho một nụ cười làm quen chân thành nhất.</p>
-                <button class="btn" onclick="nextPage(2)">Khám Phá Tiếp</button>
+                <div class="subtitle">The Prelude</div>
+                <div class="img-wrapper"><img src="img/111111111.jpg" alt="Ảnh 1"></div>
+                <p class="description">Người ta thường nói, mỗi cuộc gặp gỡ đều là một cái duyên. Mình gửi tấm hình này thay cho một nụ cười làm quen gửi đến cậu.</p>
+                <button class="btn" onclick="nextPage(2)">Tiếp theo</button>
             </div>
         </div>
 
         <div class="page" id="page2">
             <div class="card">
-                <h2>Một Chút Gần Gũi</h2>
-                <div class="subtitle">Getting Closer</div>
-                <div class="img-wrapper">
-                    <img src="img/2222222222.jpg" alt="Hình ảnh thứ hai">
-                </div>
-                <p class="description">Còn đây là một khoảnh khắc khác của mình khi đang nhâm nhi một ly nước quen thuộc. Mình rất tò mò không biết những sở thích thường ngày của bạn như thế nào?</p>
-                <button class="btn" onclick="nextPage(3)">Xem Trang Cuối</button>
+                <h2>Khoảnh Khắc Nhỏ</h2>
+                <div class="subtitle">A Quiet Moment</div>
+                <div class="img-wrapper"><img src="img/2222222222.jpg" alt="Ảnh 2"></div>
+                <p class="description">Một góc bình yên trong cuộc sống của cậu và tớ rất mong sẽ sớm được lắng nghe câu chuyện từ phía cậu.</p>
+                <button class="btn" onclick="nextPage(3)">Tiếp theo</button>
             </div>
         </div>
 
         <div class="page" id="page3">
             <div class="card">
-                <h2>Lời Hẹn Gặp Mặt</h2>
-                <div class="subtitle">An Invitation</div>
-                <div class="img-wrapper">
-                    <img src="img/qqqqqqq.jpg" alt="Hình ảnh thứ ba">
-                </div>
-                <p class="description">Và đây là tấm hình cuối cùng mình muốn chia sẻ. Nếu bạn cũng có chung mong muốn kết nối và cùng hẹn nhau một buổi trò chuyện trực tiếp, đừng ngần ngại nhắn cho mình nhé.</p>
-                <a href="https://zalo.me/0967264962" target="_blank" class="btn zalo-btn">Kết Nối Qua Zalo</a>
+                <h2>Lời Mời Gặp Mặt</h2>
+                <div class="subtitle">The Invitation</div>
+                <div class="img-wrapper"><img src="img/qqqqqqq.jpg" alt="Ảnh 3"></div>
+                <p class="description">Nếu cậu cũng muốn chúng ta có một buổi gặp gỡ trực tiếp, đừng ngần ngại kết nối với mình nhé!</p>
+                <a href="https://zalo.me/0967264962" target="_blank" class="btn" style="background: var(--accent-gold); color: var(--bg-dark);">Hãy tò mò điii</a>
             </div>
         </div>
 
         <div class="progress-dots">
-            <div class="dot active" id="dot1"></div>
+            <div class="dot active" id="dot0"></div>
+            <div class="dot" id="dot1"></div>
             <div class="dot" id="dot2"></div>
             <div class="dot" id="dot3"></div>
         </div>
-
     </div>
 
     <script>
-        function nextPage(pageNumber) {
-            // 1. Ẩn tất cả các trang hiện tại
-            document.querySelectorAll('.page').forEach(page => {
-                page.classList.remove('active');
-            });
-            // 2. Hiện trang được chọn
-            document.getElementById('page' + pageNumber).classList.add('active');
-
-            // 3. Cập nhật trạng thái các chấm chấm ở dưới
-            document.querySelectorAll('.dot').forEach(dot => {
-                dot.classList.remove('active');
-            });
-            document.getElementById('dot' + pageNumber).classList.add('active');
+        function nextPage(n) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById('page' + n).classList.add('active');
+            document.querySelectorAll('.dot').forEach(d => d.classList.remove('active'));
+            document.getElementById('dot' + n).classList.add('active');
         }
     </script>
-
 </body>
 </html>

@@ -1,135 +1,513 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gửi haha</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-    
-    <style>
-        :root {
-            --bg-dark: #0a0c10;
-            --card-bg: #131722;
-            --accent-gold: #d4af37;
-            --accent-soft: #c5a880;
-            --text-light: #f8f9fa;
-            --text-muted: #94a3b8;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Gửi em</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Dancing+Script:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  --bg1:#3a2a3c; --bg2:#1c1420;
+  --paper:#fbf6ec; --paper-edge:#efe5d2;
+  --ink:#3b2f2a; --rose:#a8445a;
+  --cover:#23413a; --gold:#d6b46a;
+  --ui:#f3e6d8;
+  --pw:400px; --ph:560px;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --bg1:#2a1f2c; --bg2:#120c15; } }
+:root[data-theme="dark"]{ --bg1:#2a1f2c; --bg2:#120c15; }
+html{scroll-padding-top:env(safe-area-inset-top,0px);height:100%}
+*,*::before,*::after{box-sizing:border-box}
+body{
+  margin:0;height:100%;overflow:hidden;
+  background:radial-gradient(ellipse at 50% 40%,var(--bg1),var(--bg2) 75%);
+  background-color:var(--bg2);
+  font-family:"Cormorant Garamond",Georgia,"Times New Roman",serif;
+  color:var(--ink);
+  display:flex;flex-direction:column;
+  -webkit-tap-highlight-color:transparent;
+}
+.stage{flex:1;display:flex;align-items:center;justify-content:center;perspective:2400px;min-height:0}
+.book{
+  position:relative;width:calc(var(--pw)*2);height:var(--ph);
+  transform-style:preserve-3d;
+  transition:transform .9s cubic-bezier(.645,.045,.355,1);
+}
+.leaf{
+  position:absolute;top:0;left:var(--pw);width:var(--pw);height:100%;
+  transform-origin:left center;transform-style:preserve-3d;
+  transition:transform .9s cubic-bezier(.645,.045,.355,1);
+  cursor:pointer;
+}
+.leaf.flipped{transform:rotateY(-180deg)}
+.face{
+  position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  overflow:hidden;
+}
+.front{border-radius:2px 8px 8px 2px}
+.back{transform:rotateY(180deg);border-radius:8px 2px 2px 8px}
+.paper{background:var(--paper);box-shadow:inset 0 0 0 1px var(--paper-edge)}
+.paper.front{background:linear-gradient(to right,rgba(80,50,30,.16),rgba(80,50,30,0) 9%),var(--paper)}
+.paper.back{background:linear-gradient(to left,rgba(80,50,30,.16),rgba(80,50,30,0) 9%),var(--paper)}
+.book::after{ /* shadow on table */
+  content:"";position:absolute;left:4%;right:4%;bottom:-5%;height:8%;
+  background:radial-gradient(ellipse,rgba(0,0,0,.45),transparent 70%);
+  transform:translateZ(-2px);pointer-events:none;
+}
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+.pg{
+  height:100%;display:flex;flex-direction:column;
+  padding:calc(var(--pw)*.11) calc(var(--pw)*.1) calc(var(--pw)*.08);
+  font-size:calc(var(--pw)*.044);line-height:1.62;
+}
+.pg h2{
+  font-family:"Dancing Script","Brush Script MT",cursive;font-weight:700;
+  color:var(--rose);font-size:2em;line-height:1.1;margin:0 0 .7em;
+}
+.pg p{margin:0 0 .8em;text-align:left;hyphens:auto}
+.pg .num{margin-top:auto;text-align:center;font-style:italic;font-size:.8em;opacity:.55}
+.sign{font-family:"Dancing Script",cursive;font-size:1.4em;color:var(--rose);text-align:right}
+.big{font-family:"Dancing Script",cursive;font-weight:700;color:var(--rose);font-size:2.6em;text-align:center;line-height:1.2;margin:.3em 0 .4em}
+.center{justify-content:center;text-align:center}
+.center p{text-align:center}
 
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: var(--bg-dark);
-            color: var(--text-light);
-            overflow: hidden;
-            display: flex; justify-content: center; align-items: center;
-            height: 100vh; width: 100vw;
-        }
+/* cover */
+.cover{
+  background:
+    repeating-linear-gradient(45deg,rgba(255,255,255,.025) 0 2px,transparent 2px 4px),
+    repeating-linear-gradient(-45deg,rgba(0,0,0,.05) 0 2px,transparent 2px 4px),
+    linear-gradient(to right,rgba(0,0,0,.35),rgba(0,0,0,0) 7%),
+    var(--cover);
+  color:var(--gold);
+}
+.cover.back{background:
+    repeating-linear-gradient(45deg,rgba(255,255,255,.025) 0 2px,transparent 2px 4px),
+    repeating-linear-gradient(-45deg,rgba(0,0,0,.05) 0 2px,transparent 2px 4px),
+    linear-gradient(to left,rgba(0,0,0,.35),rgba(0,0,0,0) 7%),
+    var(--cover)}
+.frame{
+  position:absolute;inset:calc(var(--pw)*.06);
+  border:1px solid rgba(214,180,106,.7);outline:1px solid rgba(214,180,106,.35);outline-offset:5px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+  font-size:calc(var(--pw)*.044);padding:1em;
+}
+.cover h1{
+  font-family:"Dancing Script",cursive;font-weight:700;margin:.2em 0 .1em;
+  font-size:3.4em;line-height:1;color:var(--gold);
+  text-shadow:0 1px 0 rgba(0,0,0,.4),0 -1px 0 rgba(255,240,200,.15);
+}
+.cover .sub{font-style:italic;font-size:1.15em;opacity:.9;margin:0}
+.sprig{width:38%;height:auto;margin:.6em 0}
+.hint{margin-top:2.2em;font-size:.8em;letter-spacing:.04em;opacity:.7}
 
-        .page-container { position: relative; width: 100%; height: 100%; }
+/* question */
+.choices{display:flex;flex-direction:column;gap:.6em;margin-top:1.2em;align-items:center}
+.choices button{
+  font:inherit;font-size:1em;cursor:pointer;border-radius:999px;padding:.45em 1.4em;min-width:70%;
+  border:1.5px solid var(--rose);background:transparent;color:var(--rose);
+  transition:background .2s,color .2s,transform .15s;
+}
+.choices button.yes{background:var(--rose);color:#fff}
+.choices button:hover{transform:translateY(-1px)}
+.choices button:focus-visible,.nav button:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+.reply{display:none;margin-top:1em;font-family:"Dancing Script",cursive;font-size:1.35em;color:var(--rose);text-align:center}
 
-        .page {
-            position: absolute; width: 100%; height: 100%;
-            display: flex; justify-content: center; align-items: center;
-            padding: 24px; opacity: 0; pointer-events: none;
-            transform: translateY(40px) scale(0.96);
-            transition: all 0.9s cubic-bezier(0.34, 1.56, 0.64, 1);
-            z-index: 1;
-        }
 
-        .page.active { opacity: 1; pointer-events: auto; transform: translateY(0) scale(1); z-index: 2; }
+/* ảnh */
+.photo-pg{justify-content:center;align-items:center;padding-top:calc(var(--pw)*.1)}
+.polaroid{
+  position:relative;width:86%;background:#fff;padding:5% 5% 0;
+  box-shadow:0 2px 3px rgba(0,0,0,.12),0 8px 18px rgba(60,30,20,.16);
+  transform:rotate(var(--tilt));
+}
+.tape{
+  position:absolute;top:-4%;left:50%;width:34%;height:7%;transform:translateX(-50%) rotate(-3deg);
+  background:rgba(214,190,150,.55);box-shadow:0 1px 1px rgba(0,0,0,.06);
+}
+.photo{position:relative;aspect-ratio:4/5;background:#efe9df;overflow:hidden}
+.photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none}
+.photo.has img{display:block}
+.photo.has .ph{display:none}
+.ph{
+  position:absolute;inset:6%;border:1.5px dashed rgba(168,68,90,.45);border-radius:4px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.3em;
+  color:var(--rose);font-size:.85em;font-style:italic;cursor:pointer;text-align:center;
+}
+.ph span{font-size:2em;font-style:normal;line-height:1}
+.cap{
+  font-family:"Dancing Script",cursive;color:var(--ink);text-align:center!important;
+  font-size:1.2em;line-height:1.3;margin:.35em 0 .5em!important;min-height:1.3em;
+}
 
-        .card {
-            background: var(--card-bg); width: 100%; max-width: 480px;
-            border-radius: 28px; border: 1px solid rgba(197, 168, 128, 0.12);
-            padding: 40px; box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
-            text-align: center;
-        }
+/* nav */
+.nav{
+  display:flex;align-items:center;justify-content:center;gap:1.2rem;
+  padding:.6rem 1rem 1rem;color:var(--ui);font-size:1.05rem;
+}
+.nav button{
+  width:44px;height:44px;border-radius:50%;border:1px solid rgba(243,230,216,.35);
+  background:rgba(255,255,255,.05);color:var(--ui);font-size:1.4rem;cursor:pointer;line-height:1;
+}
+.nav button:disabled{opacity:.25;cursor:default}
+.nav span{min-width:9em;text-align:center;font-style:italic;opacity:.85}
 
-        h2 { font-family: 'Playfair Display', serif; color: var(--accent-gold); font-size: 28px; margin-bottom: 10px; }
-        .subtitle { font-family: 'Playfair Display', serif; font-style: italic; color: var(--text-muted); margin-bottom: 25px; }
-        .letter-text { font-family: 'Playfair Display', serif; font-style: italic; line-height: 1.8; color: #cbd5e1; margin-bottom: 30px; }
-
-        .img-wrapper { width: 100%; height: 360px; border-radius: 20px; overflow: hidden; margin-bottom: 24px; }
-        .img-wrapper img { width: 100%; height: 100%; object-fit: cover; }
-
-        .description { font-size: 15px; color: #cbd5e1; line-height: 1.7; margin-bottom: 28px; font-weight: 300; }
-
-        .btn {
-            display: inline-flex; align-items: center; justify-content: center;
-            background: transparent; color: var(--accent-soft);
-            border: 1px solid rgba(197, 168, 128, 0.4); padding: 14px 40px;
-            font-size: 13px; font-weight: 500; border-radius: 30px;
-            text-transform: uppercase; cursor: pointer; transition: 0.4s; text-decoration: none;
-        }
-        .btn:hover { background: var(--accent-gold); color: var(--bg-dark); border-color: var(--accent-gold); }
-
-        .progress-dots { position: absolute; bottom: 35px; left: 50%; transform: translateX(-50%); display: flex; gap: 10px; }
-        .dot { width: 7px; height: 7px; border-radius: 50%; background: rgba(255, 255, 255, 0.15); transition: 0.4s; }
-        .dot.active { background: var(--accent-gold); width: 20px; border-radius: 10px; }
-    </style>
+/* petals */
+.petal{
+  position:fixed;top:-5vh;width:14px;height:14px;pointer-events:none;z-index:999;
+  background:radial-gradient(circle at 30% 30%,#f4b6c2,#c85a74);
+  border-radius:0 60% 0 60%;opacity:.9;
+  animation:fall linear forwards;
+}
+@keyframes fall{
+  to{transform:translate(var(--dx),110vh) rotate(var(--rot));opacity:.7}
+}
+@media (prefers-reduced-motion: reduce){
+  .leaf,.book{transition-duration:.01s}
+  .petal{display:none}
+}
+</style>
 </head>
 <body>
 
-    <div class="page-container">
+<div class="stage" id="stage">
+  <div class="book" id="book">
 
-        <div class="page active" id="page0">
-            <div class="card">
-                <h2>Gửi cậu,</h2>
-                <div class="subtitle">A Personal Invitation</div>
-                <div class="letter-text">
-                    "Giữa những nhịp sống hối hả, đôi khi mình mong tìm được một khoảng lặng để kết nối chân thành. Mình đã gói ghém những cảm xúc và khoảnh khắc đáng nhớ vào những trang tiếp theo..."
-                </div>
-                <button class="btn" onclick="nextPage(1)">Mở thư của mình</button>
-            </div>
+    <!-- Lá 1: bìa / lời đề tặng -->
+    <div class="leaf">
+      <div class="face front cover">
+        <div class="frame">
+          <p class="sub">những điều anh chưa từng nói</p>
+          <svg class="sprig" viewBox="0 0 120 60" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round">
+            <path d="M10 50 C40 40 70 28 110 10"/>
+            <path d="M35 42 C30 30 38 22 46 20 C46 30 42 38 35 42Z"/>
+            <path d="M55 34 C58 22 68 18 76 20 C72 30 64 34 55 34Z"/>
+            <path d="M78 24 C76 14 84 6 92 6 C92 14 86 22 78 24Z"/>
+            <circle cx="110" cy="10" r="3"/>
+          </svg>
+          <h1>Gửi <span class="ten-em">em</span></h1>
+          <p class="hint">chạm vào trang để lật</p>
         </div>
-
-        <div class="page" id="page1">
-            <div class="card">
-                <h2>Lời Chào Đầu</h2>
-                <div class="subtitle">The Prelude</div>
-                <div class="img-wrapper"><img src="img/111111111.jpg" alt="Ảnh 1"></div>
-                <p class="description">Người ta thường nói, mỗi cuộc gặp gỡ đều là một cái duyên. Mình gửi tấm hình này thay cho một nụ cười làm quen gửi đến cậu.</p>
-                <button class="btn" onclick="nextPage(2)">Tiếp theo</button>
-            </div>
+      </div>
+      <div class="face back paper">
+        <div class="pg center">
+          <p>Cuốn sách này chỉ có một người đọc.</p>
+          <p>Nếu em đang lật những trang này, nghĩa là cuối cùng anh cũng đủ can đảm để trao nó cho em.</p>
+          <p style="margin-top:1.5em;font-style:italic;opacity:.75">Đọc chậm thôi nhé.</p>
         </div>
-
-        <div class="page" id="page2">
-            <div class="card">
-                <h2>Khoảnh Khắc Nhỏ</h2>
-                <div class="subtitle">A Quiet Moment</div>
-                <div class="img-wrapper"><img src="img/2222222222.jpg" alt="Ảnh 2"></div>
-                <p class="description">Một góc bình yên trong cuộc sống của cậu và tớ rất mong sẽ sớm được lắng nghe câu chuyện từ phía cậu.</p>
-                <button class="btn" onclick="nextPage(3)">Tiếp theo</button>
-            </div>
-        </div>
-
-        <div class="page" id="page3">
-            <div class="card">
-                <h2>Lời Mời Gặp Mặt</h2>
-                <div class="subtitle">The Invitation</div>
-                <div class="img-wrapper"><img src="img/qqqqqqq.jpg" alt="Ảnh 3"></div>
-                <p class="description">Nếu cậu cũng muốn chúng ta có một buổi gặp gỡ trực tiếp, đừng ngần ngại kết nối với mình nhé!</p>
-                <a href="https://zalo.me/0967264962" target="_blank" class="btn" style="background: var(--accent-gold); color: var(--bg-dark);">Hãy tò mò điii</a>
-            </div>
-        </div>
-
-        <div class="progress-dots">
-            <div class="dot active" id="dot0"></div>
-            <div class="dot" id="dot1"></div>
-            <div class="dot" id="dot2"></div>
-            <div class="dot" id="dot3"></div>
-        </div>
+      </div>
     </div>
 
-    <script>
-        function nextPage(n) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById('page' + n).classList.add('active');
-            document.querySelectorAll('.dot').forEach(d => d.classList.remove('active'));
-            document.getElementById('dot' + n).classList.add('active');
-        }
-    </script>
+    <!-- Lá 2 -->
+    <div class="leaf">
+      <div class="face front paper">
+        <div class="pg">
+          <h2>Ngày đầu tiên</h2>
+          <p>Anh vẫn nhớ lần đầu gặp em. Không có gì đặc biệt cả, một buổi chiều bình thường, một câu chào bình thường.</p>
+          <p>Vậy mà tối hôm đó về nhà, anh cứ nghĩ mãi về nụ cười của em. Anh không biết lúc ấy mình đã bắt đầu thương em. Anh chỉ biết từ hôm đó, những buổi chiều bình thường bỗng trở nên đáng mong chờ.</p>
+          <span class="num">1</span>
+        </div>
+      </div>
+      <div class="face back paper">
+        <div class="pg photo-pg">
+          <div class="polaroid" style="--tilt:-2.5deg">
+            <span class="tape"></span>
+            <div class="photo" data-i="0">
+              <img alt="">
+              <div class="ph"><span>＋</span>Chạm để chọn ảnh</div>
+            </div>
+            <p class="cap"></p>
+          </div>
+          <span class="num">2</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Lá 3 -->
+    <div class="leaf">
+      <div class="face front paper">
+        <div class="pg">
+          <h2>Những điều nhỏ bé</h2>
+          <p>Anh để ý về em nhiều hơn em nghĩ. Cách em nhíu mày khi tập trung. Cách em bật cười trước cả khi kể xong một chuyện buồn cười. Cách em luôn hỏi han người khác, dù chính mình đang mệt.</p>
+          <p>Người ta gọi đó là những điều nhỏ bé. Với anh, đó là lý do để thương em thêm một chút mỗi ngày.</p>
+          <span class="num">3</span>
+        </div>
+      </div>
+      <div class="face back paper">
+        <div class="pg photo-pg">
+          <div class="polaroid" style="--tilt:2deg">
+            <span class="tape"></span>
+            <div class="photo" data-i="1">
+              <img alt="">
+              <div class="ph"><span>＋</span>Chạm để chọn ảnh</div>
+            </div>
+            <p class="cap"></p>
+          </div>
+          <span class="num">4</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Lá 4 -->
+    <div class="leaf">
+      <div class="face front paper">
+        <div class="pg">
+          <h2>Anh đã từng sợ</h2>
+          <p>Anh sợ nói ra rồi mình sẽ không còn được như trước. Sợ em khó xử. Sợ mất những cuộc trò chuyện mà anh trân quý.</p>
+          <p>Nên anh đã im lặng rất lâu. Rồi anh nhận ra, giữ mãi một điều thật lòng trong tim cũng là chưa thành thật với em. Và em xứng đáng được biết.</p>
+          <span class="num">5</span>
+        </div>
+      </div>
+      <div class="face back paper">
+        <div class="pg">
+          <h2>Vì sao là em</h2>
+          <p>Không phải vì em hoàn hảo. Mà vì ở cạnh em, anh được là chính mình, không cần cố tỏ ra giỏi giang hay mạnh mẽ.</p>
+          <p>Em làm những ngày mệt mỏi nhẹ đi, làm những ngày vui thêm vui. Anh đã gặp nhiều người, nhưng chỉ có em khiến anh muốn đi cùng thật lâu.</p>
+          <span class="num">6</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Lá 5 -->
+    <div class="leaf">
+      <div class="face front paper">
+        <div class="pg photo-pg">
+          <div class="polaroid" style="--tilt:-1.5deg">
+            <span class="tape"></span>
+            <div class="photo" data-i="2">
+              <img alt="">
+              <div class="ph"><span>＋</span>Chạm để chọn ảnh</div>
+            </div>
+            <p class="cap"></p>
+          </div>
+          <span class="num">11</span>
+        </div>
+      </div>
+      <div class="face back paper">
+        <div class="pg">
+          <h2>Một lời hứa</h2>
+          <p>Anh không hứa những điều lớn lao.</p>
+          <p>Anh chỉ hứa sẽ lắng nghe em, cả khi em không nói ra. Sẽ tôn trọng em, cả khi mình không cùng ý kiến. Sẽ ở đó vào những ngày em cần một bờ vai, và cả những ngày em chỉ cần ai đó ngồi yên bên cạnh.</p>
+          <span class="num">8</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Lá 6 -->
+    <div class="leaf">
+      <div class="face front paper">
+        <div class="pg center">
+          <p>Sau tất cả những trang này, anh chỉ muốn nói thật đơn giản:</p>
+          <div class="big">Anh thương em.</div>
+          <p>Không phải thoáng qua, không phải nhất thời. Là thương thật lòng.</p>
+          <p class="sign">— <span class="ten-anh">Anh</span></p>
+          <span class="num">9</span>
+        </div>
+      </div>
+      <div class="face back paper">
+        <div class="pg photo-pg">
+          <div class="polaroid" style="--tilt:2.5deg">
+            <span class="tape"></span>
+            <div class="photo" data-i="3">
+              <img alt="">
+              <div class="ph"><span>＋</span>Chạm để chọn ảnh</div>
+            </div>
+            <p class="cap"></p>
+          </div>
+          <span class="num">10</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Lá 5: câu hỏi / bìa sau -->
+    <div class="leaf">
+      <div class="face front paper">
+        <div class="pg center">
+          <h2 style="margin-bottom:.4em">Vậy thì…</h2>
+          <p style="font-size:1.2em">Em có muốn làm người yêu anh không?</p>
+          <div class="choices" id="choices">
+            <button class="yes" id="btnYes">Em đồng ý</button>
+            <button id="btnWait">Cho em thêm thời gian</button>
+          </div>
+          <div class="reply" id="reply"></div>
+          <p style="margin-top:1.4em;font-size:.85em;font-style:italic;opacity:.7">Dù em chọn gì, cảm ơn em đã đọc đến trang này.</p>
+          <span class="num">11</span>
+        </div>
+      </div>
+      <div class="face back cover">
+        <div class="frame">
+          <svg class="sprig" viewBox="0 0 120 60" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" style="width:28%">
+            <path d="M60 52 C52 40 38 36 38 24 C38 16 46 12 52 14 C56 15 59 18 60 22 C61 18 64 15 68 14 C74 12 82 16 82 24 C82 36 68 40 60 52Z"/>
+          </svg>
+          <p class="sub">Hết.<br>Hoặc là bắt đầu.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="nav">
+  <button id="prev" aria-label="Trang trước">‹</button>
+  <span id="label">Bìa</span>
+  <button id="next" aria-label="Trang sau">›</button>
+</div>
+
+<script>
+/* ✎ Sửa tên ở đây */
+const TEN_EM  = "em";   // ví dụ: "Linh"
+const TEN_ANH = "Anh";  // ví dụ: "Minh"
+
+document.querySelectorAll(".ten-em").forEach(e => e.textContent = TEN_EM);
+document.querySelectorAll(".ten-anh").forEach(e => e.textContent = TEN_ANH);
+
+
+/* ✎ Ảnh: đặt file ảnh cùng thư mục với file HTML này, rồi ghi tên file + chú thích */
+const PHOTOS = [
+  { src: "anh1.jpg", caption: "Lần đầu mình gặp nhau" },
+  { src: "anh2.jpg", caption: "Nụ cười anh thích nhất" },
+  { src: "anh3.jpg", caption: "Một ngày bình thường có em" },
+  { src: "anh4.jpg", caption: "Và anh mong còn nhiều ngày nữa" },
+];
+document.querySelectorAll(".photo").forEach(box => {
+  const i = +box.dataset.i, cfg = PHOTOS[i] || {};
+  const img = box.querySelector("img");
+  box.parentElement.querySelector(".cap").textContent = cfg.caption || "";
+  img.onload = () => box.classList.add("has");
+  img.onerror = () => box.classList.remove("has");
+  if (cfg.src) img.src = cfg.src;
+  // chưa có ảnh: chạm để chọn ảnh từ máy (chỉ để xem thử, không lưu lại)
+  box.querySelector(".ph").addEventListener("click", e => {
+    e.stopPropagation();
+    const inp = document.createElement("input");
+    inp.type = "file"; inp.accept = "image/*";
+    inp.onchange = () => { if (inp.files[0]) img.src = URL.createObjectURL(inp.files[0]); };
+    inp.click();
+  });
+});
+
+const book = document.getElementById("book");
+const leaves = [...document.querySelectorAll(".leaf")];
+const N = leaves.length;
+const LAST = N * 2 - 1;          // trang cuối (bìa sau)
+let p = 0;                        // vị trí trang tuyến tính: chẵn = bên phải, lẻ = bên trái
+let mobile = false, pw = 400;
+
+function layout(){
+  const vw = innerWidth, vh = innerHeight;
+  const availH = vh - 110;
+  mobile = vw < 720 || vw / vh < 1;
+  pw = mobile ? Math.min(vw * 0.86, availH / 1.42)
+              : Math.min((vw - 80) / 2, availH / 1.42, 470);
+  document.documentElement.style.setProperty("--pw", pw + "px");
+  document.documentElement.style.setProperty("--ph", pw * 1.42 + "px");
+  if (!mobile && p > 0 && p % 2 === 0) p -= 1;   // desktop luôn ở trang lẻ (trải đôi)
+  render(false);
+}
+
+function render(animate = true){
+  const flipped = Math.floor((p + 1) / 2);
+  leaves.forEach((leaf, i) => {
+    const should = i < flipped;
+    if (leaf.classList.contains("flipped") !== should && animate){
+      leaf.style.zIndex = 100;
+      setTimeout(() => leaf.style.zIndex = should ? i + 1 : N - i, 900);
+    } else {
+      leaf.style.zIndex = should ? i + 1 : N - i;
+    }
+    leaf.classList.toggle("flipped", should);
+  });
+
+  let shift = 0;
+  if (mobile) shift = (p % 2 === 0) ? -pw / 2 : pw / 2;
+  else if (p === 0) shift = -pw / 2;
+  else if (p === LAST) shift = pw / 2;
+  book.style.transform = `translateX(${shift}px)`;
+
+  const lbl = document.getElementById("label");
+  if (p === 0) lbl.textContent = "Bìa";
+  else if (p === LAST) lbl.textContent = "Bìa sau";
+  else if (p === 1) lbl.textContent = mobile ? "Lời mở đầu" : "Lời mở đầu · trang 1";
+  else lbl.textContent = mobile ? `Trang ${p - 1}` : `Trang ${p - 1} – ${p}`;
+
+  document.getElementById("prev").disabled = p === 0;
+  document.getElementById("next").disabled = p === LAST;
+}
+
+function next(){
+  if (p >= LAST) return;
+  p = mobile ? p + 1 : (p === 0 ? 1 : Math.min(p + 2, LAST));
+  render();
+}
+function prev(){
+  if (p <= 0) return;
+  p = mobile ? p - 1 : (p <= 1 ? 0 : p - 2);
+  render();
+}
+
+document.getElementById("next").onclick = next;
+document.getElementById("prev").onclick = prev;
+document.getElementById("stage").addEventListener("click", e => {
+  if (e.target.closest("button")) return;
+  const r = book.getBoundingClientRect();
+  if (e.clientX < r.left || e.clientX > r.right) return;
+  (e.clientX > innerWidth / 2) ? next() : prev();
+});
+addEventListener("keydown", e => {
+  if (e.key === "ArrowRight") next();
+  if (e.key === "ArrowLeft") prev();
+});
+let sx = null;
+addEventListener("touchstart", e => sx = e.touches[0].clientX, {passive:true});
+addEventListener("touchend", e => {
+  if (sx === null) return;
+  const dx = e.changedTouches[0].clientX - sx;
+  if (Math.abs(dx) > 50){ dx < 0 ? next() : prev(); }
+  sx = null;
+});
+// chặn click-lật khi vừa vuốt
+document.getElementById("stage").addEventListener("touchend", e => {
+  if (sx !== null && Math.abs(e.changedTouches[0].clientX - sx) > 50) e.preventDefault();
+});
+
+/* câu trả lời */
+const reply = document.getElementById("reply");
+document.getElementById("btnYes").onclick = e => {
+  e.stopPropagation();
+  document.getElementById("choices").style.display = "none";
+  reply.style.display = "block";
+  reply.textContent = "Anh là người hạnh phúc nhất hôm nay. Cảm ơn em ♥";
+  petals();
+};
+document.getElementById("btnWait").onclick = e => {
+  e.stopPropagation();
+  document.getElementById("choices").style.display = "none";
+  reply.style.display = "block";
+  reply.textContent = "Không vội đâu em. Anh sẽ đợi, và mọi thứ giữa mình vẫn như cũ.";
+};
+
+function petals(){
+  for (let i = 0; i < 45; i++){
+    const s = document.createElement("span");
+    s.className = "petal";
+    s.style.left = Math.random() * 100 + "vw";
+    s.style.setProperty("--dx", (Math.random() * 30 - 15) + "vw");
+    s.style.setProperty("--rot", (Math.random() * 720 - 360) + "deg");
+    s.style.animationDuration = 4 + Math.random() * 4 + "s";
+    s.style.animationDelay = Math.random() * 2.5 + "s";
+    const sc = 0.6 + Math.random() * 0.9;
+    s.style.width = s.style.height = 14 * sc + "px";
+    document.body.appendChild(s);
+    setTimeout(() => s.remove(), 11000);
+  }
+}
+
+addEventListener("resize", layout);
+layout();
+</script>
 </body>
 </html>

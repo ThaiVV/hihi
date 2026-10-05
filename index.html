@@ -163,16 +163,29 @@ body{
   .polaroid{width:88%}
 }
 
-/* petals */
+/* cánh hoa hồng */
 .petal{
-  position:fixed;top:-5vh;width:14px;height:14px;pointer-events:none;z-index:999;
-  background:radial-gradient(circle at 30% 30%,#f4b6c2,#c85a74);
-  border-radius:0 60% 0 60%;opacity:.9;
-  animation:fall linear forwards;
+  position:fixed;top:-10vh;left:0;pointer-events:none;z-index:999;will-change:transform;
+  animation:fall var(--d) linear var(--delay) forwards;
+}
+.petal i{
+  display:block;width:var(--s);height:calc(var(--s)*1.2);
+  border-radius:0 75% 60% 75%;
+  background:radial-gradient(ellipse at 35% 30%,var(--hi) 0%,var(--c) 55%,var(--lo) 100%);
+  box-shadow:inset -1px -2px 3px rgba(60,0,10,.35);
+  opacity:.95;
+  animation:sway var(--sw) ease-in-out infinite alternate;
 }
 @keyframes fall{
-  to{transform:translate(var(--dx),110vh) rotate(var(--rot));opacity:.7}
+  from{transform:translate3d(var(--x),0,0)}
+  to{transform:translate3d(calc(var(--x) + var(--dx)),120vh,0)}
 }
+@keyframes sway{
+  from{transform:rotate(var(--r0)) rotateX(0deg) rotateY(0deg) translateX(-12px)}
+  to{transform:rotate(calc(var(--r0) + 140deg)) rotateX(65deg) rotateY(55deg) translateX(12px)}
+}
+.nav .music{font-size:1.05rem}
+.nav .music.off{opacity:.45;text-decoration:line-through}
 @media (prefers-reduced-motion: reduce){
   .leaf,.book{transition-duration:.01s}
   .petal{display:none}
@@ -337,11 +350,10 @@ body{
           <h2 style="margin-bottom:.4em">Vậy thì…</h2>
           <p style="font-size:1.2em">Em có muốn làm người yêu anh không?</p>
           <div class="choices" id="choices">
-            <button class="yes" id="btnYes">Em đồng ý</button>
-            <button id="btnWait">Cho em thêm thời gian</button>
+            <button class="yes" id="btnYes">Em đồng ý ♥</button>
           </div>
           <div class="reply" id="reply"></div>
-          <p style="margin-top:1.4em;font-size:.85em;font-style:italic;opacity:.7">Dù em chọn gì, cảm ơn em đã đọc đến trang này.</p>
+          <p style="margin-top:1.4em;font-size:.85em;font-style:italic;opacity:.7">Trang này chỉ có một đáp án thôi nhé.</p>
           <span class="num">11</span>
         </div>
       </div>
@@ -362,6 +374,7 @@ body{
   <button id="prev" aria-label="Trang trước">‹</button>
   <span id="label">Bìa</span>
   <button id="next" aria-label="Trang sau">›</button>
+  <button id="music" class="music" aria-label="Bật/tắt nhạc">♫</button>
 </div>
 
 <script>
@@ -456,15 +469,22 @@ function render(animate = true){
   document.getElementById("next").disabled = p === LAST;
 }
 
+function go(np){
+  const old = p; p = np; render();
+  if (old === 0 && p > 0){          // mở sách
+    startMusic();
+    petals(140);
+  }
+  if (p === LAST && old !== LAST) setTimeout(() => petals(140), 500);  // đóng sách (bìa sau)
+  if (p === 0 && old > 0) setTimeout(() => petals(100), 500);         // gập lại về bìa trước
+}
 function next(){
   if (p >= LAST) return;
-  p = mobile ? p + 1 : (p === 0 ? 1 : Math.min(p + 2, LAST));
-  render();
+  go(mobile ? p + 1 : (p === 0 ? 1 : Math.min(p + 2, LAST)));
 }
 function prev(){
   if (p <= 0) return;
-  p = mobile ? p - 1 : (p <= 1 ? 0 : p - 2);
-  render();
+  go(mobile ? p - 1 : (p <= 1 ? 0 : p - 2));
 }
 
 document.getElementById("next").onclick = next;
@@ -492,37 +512,126 @@ document.getElementById("stage").addEventListener("touchend", e => {
   if (sx !== null && Math.abs(e.changedTouches[0].clientX - sx) > 50) e.preventDefault();
 });
 
-/* câu trả lời */
+/* câu trả lời: mặc định đồng ý */
 const reply = document.getElementById("reply");
 document.getElementById("btnYes").onclick = e => {
   e.stopPropagation();
   document.getElementById("choices").style.display = "none";
   reply.style.display = "block";
   reply.textContent = "Anh là người hạnh phúc nhất hôm nay. Cảm ơn em ♥";
-  petals();
-};
-document.getElementById("btnWait").onclick = e => {
-  e.stopPropagation();
-  document.getElementById("choices").style.display = "none";
-  reply.style.display = "block";
-  reply.textContent = "Không vội đâu em. Anh sẽ đợi, và mọi thứ giữa mình vẫn như cũ.";
+  startMusic();
+  petals(160);
 };
 
-function petals(){
-  for (let i = 0; i < 45; i++){
-    const s = document.createElement("span");
-    s.className = "petal";
-    s.style.left = Math.random() * 100 + "vw";
-    s.style.setProperty("--dx", (Math.random() * 30 - 15) + "vw");
-    s.style.setProperty("--rot", (Math.random() * 720 - 360) + "deg");
-    s.style.animationDuration = 4 + Math.random() * 4 + "s";
-    s.style.animationDelay = Math.random() * 2.5 + "s";
-    const sc = 0.6 + Math.random() * 0.9;
-    s.style.width = s.style.height = 14 * sc + "px";
-    document.body.appendChild(s);
-    setTimeout(() => s.remove(), 11000);
+/* mưa cánh hoa hồng */
+const PETAL_COLORS = [
+  ["#ff8fa6","#c8183a","#6e0a1e"],
+  ["#ffa3b5","#d93a5c","#7a1027"],
+  ["#ff7a92","#b3102f","#5a0717"],
+  ["#ffc2cf","#e5627e","#8c1d36"],
+];
+function petals(count = 120){
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const frag = document.createDocumentFragment();
+  for (let i = 0; i < count; i++){
+    const w = document.createElement("span"); w.className = "petal";
+    const leaf = document.createElement("i"); w.appendChild(leaf);
+    const [hi, c, lo] = PETAL_COLORS[Math.random() * PETAL_COLORS.length | 0];
+    const d = 5 + Math.random() * 5, delay = Math.random() * 3.5;
+    w.style.setProperty("--x", Math.random() * 100 + "vw");
+    w.style.setProperty("--dx", (Math.random() * 40 - 20) + "vw");
+    w.style.setProperty("--d", d + "s");
+    w.style.setProperty("--delay", delay + "s");
+    leaf.style.setProperty("--s", 10 + Math.random() * 14 + "px");
+    leaf.style.setProperty("--sw", 1.2 + Math.random() * 1.8 + "s");
+    leaf.style.setProperty("--r0", Math.random() * 360 + "deg");
+    leaf.style.setProperty("--hi", hi); leaf.style.setProperty("--c", c); leaf.style.setProperty("--lo", lo);
+    frag.appendChild(w);
+    setTimeout(() => w.remove(), (d + delay) * 1000 + 300);
   }
+  document.body.appendChild(frag);
 }
+
+/* ✎ Nhạc: đặt file nhạc (mp3) cùng thư mục và ghi tên vào đây.
+   Không có file thì sách tự chơi một giai điệu hộp nhạc nhẹ nhàng. */
+const MUSIC = "nhac.mp3";
+
+let musicStarted = false, musicOn = true, audioEl = null, actx = null, master = null, synthOn = false;
+function startMusic(){
+  if (musicStarted) return;
+  musicStarted = true;
+  // tạo AudioContext ngay trong lần chạm (iPhone yêu cầu)
+  try {
+    actx = new (window.AudioContext || window.webkitAudioContext)();
+    actx.resume();
+  } catch(e){}
+  audioEl = new Audio(MUSIC);
+  audioEl.loop = true; audioEl.volume = 0.7;
+  audioEl.addEventListener("error", startSynth);
+  const pr = audioEl.play();
+  if (pr) pr.catch(() => { if (!audioEl.error) return; startSynth(); });
+}
+
+/* giai điệu hộp nhạc tự sáng tác: C – Am – F – G */
+const NOTE = n => 440 * Math.pow(2, (n - 69) / 12);
+const CHORDS = [
+  [48,55,60,64,67,64,60,55], [45,52,57,60,64,60,57,52],
+  [41,48,53,57,60,57,53,48], [43,50,55,59,62,59,55,50],
+];
+const MELODY = [
+  [76,null,79,null,77,76,74,null], [72,null,76,null,74,72,71,null],
+  [69,null,72,null,74,72,69,null], [71,null,74,null,79,null,77,74],
+  [76,null,79,null,81,79,77,null], [76,null,72,null,74,76,72,null],
+  [69,null,72,null,77,76,74,null], [74,null,71,null,72,null,null,null],
+];
+function startSynth(){
+  if (synthOn || !actx) return;
+  synthOn = true;
+  master = actx.createGain(); master.gain.value = musicOn ? 0.22 : 0;
+  const delay = actx.createDelay(); delay.delayTime.value = 0.32;
+  const fb = actx.createGain(); fb.gain.value = 0.28;
+  delay.connect(fb); fb.connect(delay);
+  master.connect(actx.destination); master.connect(delay); delay.connect(actx.destination);
+  const step = 0.34; let t = actx.currentTime + 0.1, bar = 0;
+  function bell(midi, when, vol){
+    const o = actx.createOscillator(), o2 = actx.createOscillator(), g = actx.createGain();
+    o.type = "sine"; o2.type = "sine";
+    o.frequency.value = NOTE(midi); o2.frequency.value = NOTE(midi) * 4.01;
+    const g2 = actx.createGain(); g2.gain.value = 0.08;
+    o.connect(g); o2.connect(g2); g2.connect(g); g.connect(master);
+    g.gain.setValueAtTime(0.0001, when);
+    g.gain.exponentialRampToValueAtTime(vol, when + 0.008);
+    g.gain.exponentialRampToValueAtTime(0.0001, when + 1.8);
+    o.start(when); o2.start(when); o.stop(when + 1.9); o2.stop(when + 1.9);
+  }
+  (function schedule(){
+    while (t < actx.currentTime + 1.5){
+      const ch = CHORDS[bar % 4], mel = MELODY[bar % 8];
+      for (let i = 0; i < 8; i++){
+        bell(ch[i] + 12, t + i * step, 0.18);
+        if (mel[i]) bell(mel[i], t + i * step, 0.32);
+      }
+      t += step * 8; bar++;
+    }
+    setTimeout(schedule, 500);
+  })();
+}
+
+const musicBtn = document.getElementById("music");
+musicBtn.onclick = e => {
+  e.stopPropagation();
+  if (!musicStarted){ startMusic(); musicOn = true; }
+  else musicOn = !musicOn;
+  if (audioEl) audioEl.muted = !musicOn;
+  if (master) master.gain.value = musicOn ? 0.22 : 0;
+  if (actx && musicOn) actx.resume();
+  musicBtn.classList.toggle("off", !musicOn);
+};
+document.addEventListener("visibilitychange", () => {
+  if (!actx) return;
+  document.hidden ? actx.suspend() : (musicOn && actx.resume());
+  if (audioEl && !audioEl.error) document.hidden ? audioEl.pause() : (musicOn && audioEl.play().catch(()=>{}));
+});
 
 addEventListener("resize", layout);
 addEventListener("orientationchange", () => setTimeout(layout, 300));

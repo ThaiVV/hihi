@@ -3,532 +3,298 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Gửi em</title>
+<title>Cảm ơn em</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Dancing+Script:wght@500;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  box-sizing:border-box;
-  padding-top:env(safe-area-inset-top,0px);
-  padding-bottom:env(safe-area-inset-bottom,0px);
   --bg1:#3a2a3c; --bg2:#1c1420;
   --paper:#fbf6ec; --paper-edge:#efe5d2;
-  --ink:#3b2f2a; --rose:#a8445a;
-  --cover:#23413a; --gold:#d6b46a;
-  --ui:#f3e6d8;
-  --pw:400px; --ph:560px; --fs:17px;
+  --ink:#3b2f2a; --rose:#a8445a; --wax:#9b1b34;
+  --green:#23413a; --gold:#d6b46a; --ui:#f3e6d8;
 }
 @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --bg1:#2a1f2c; --bg2:#120c15; } }
 :root[data-theme="dark"]{ --bg1:#2a1f2c; --bg2:#120c15; }
-html{scroll-padding-top:env(safe-area-inset-top,0px);height:100%}
 *,*::before,*::after{box-sizing:border-box}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
 body{
-  margin:0;height:100%;height:100dvh;overflow:hidden;
-  overscroll-behavior:none;touch-action:manipulation;
-  -webkit-user-select:none;user-select:none;-webkit-touch-callout:none;
-  background:radial-gradient(ellipse at 50% 40%,var(--bg1),var(--bg2) 75%);
+  margin:0;min-height:100%;min-height:100dvh;
+  background:radial-gradient(ellipse at 50% 35%,var(--bg1),var(--bg2) 75%) fixed;
   background-color:var(--bg2);
-  font-family:"Cormorant Garamond",Georgia,"Times New Roman",serif;
-  color:var(--ink);
-  display:flex;flex-direction:column;
-  -webkit-tap-highlight-color:transparent;
+  font-family:"Cormorant Garamond",Georgia,serif;color:var(--ink);
+  -webkit-tap-highlight-color:transparent;touch-action:manipulation;
+  overscroll-behavior:none;
 }
-.stage{flex:1;display:flex;align-items:center;justify-content:center;perspective:2400px;min-height:0}
-.book{
-  position:relative;flex-shrink:0;width:calc(var(--pw)*2);height:var(--ph);
-  transform-style:preserve-3d;
-  transition:transform .9s cubic-bezier(.645,.045,.355,1);
-}
-.leaf{
-  position:absolute;top:0;left:var(--pw);width:var(--pw);height:100%;
-  transform-origin:left center;transform-style:preserve-3d;
-  transition:transform .9s cubic-bezier(.645,.045,.355,1);
-  cursor:pointer;
-}
-.leaf.flipped{transform:rotateY(-180deg)}
-.face{
-  position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;
-  overflow:hidden;
-}
-.front{border-radius:2px 8px 8px 2px}
-.back{transform:rotateY(180deg);border-radius:8px 2px 2px 8px}
-.paper{background:var(--paper);box-shadow:inset 0 0 0 1px var(--paper-edge)}
-.paper.front{background:linear-gradient(to right,rgba(80,50,30,.16),rgba(80,50,30,0) 9%),var(--paper)}
-.paper.back{background:linear-gradient(to left,rgba(80,50,30,.16),rgba(80,50,30,0) 9%),var(--paper)}
-.book::after{ /* shadow on table */
-  content:"";position:absolute;left:4%;right:4%;bottom:-5%;height:8%;
-  background:radial-gradient(ellipse,rgba(0,0,0,.45),transparent 70%);
-  transform:translateZ(-2px);pointer-events:none;
-}
+body.sealed{overflow:hidden;height:100dvh}
 
-.pg{
-  height:100%;display:flex;flex-direction:column;
-  padding:calc(var(--pw)*.11) calc(var(--pw)*.1) calc(var(--pw)*.08);
-  font-size:var(--fs);line-height:1.62;
+/* ===== Phong thư ===== */
+.envelope-scene{
+  position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:28px;padding:env(safe-area-inset-top,0) 16px env(safe-area-inset-bottom,0);
+  perspective:1200px;z-index:10;transition:opacity .8s ease .9s,visibility 0s linear 1.7s;
 }
-.pg h2{
-  font-family:"Dancing Script","Brush Script MT",cursive;font-weight:700;
-  color:var(--rose);font-size:2em;line-height:1.1;margin:0 0 .7em;
+.opened .envelope-scene{opacity:0;visibility:hidden;pointer-events:none}
+.envelope{
+  position:relative;width:min(86vw,380px);aspect-ratio:3/2;cursor:pointer;
+  transition:transform .8s cubic-bezier(.6,-.2,.4,1.2);
+  animation:bob 3s ease-in-out infinite;
 }
-.pg p{margin:0 0 .8em;text-align:left;hyphens:auto}
-.pg .num{margin-top:auto;text-align:center;font-style:italic;font-size:.8em;opacity:.55}
-.sign{font-family:"Dancing Script",cursive;font-size:1.4em;color:var(--rose);text-align:right}
-.big{font-family:"Dancing Script",cursive;font-weight:700;color:var(--rose);font-size:2.6em;text-align:center;line-height:1.2;margin:.3em 0 .4em}
-.center{justify-content:center;text-align:center}
-.center p{text-align:center}
+@keyframes bob{50%{transform:translateY(-6px)}}
+.opened .envelope{animation:none;transform:translateY(30vh) scale(.9)}
+.env-back,.env-front{position:absolute;inset:0;border-radius:6px}
+.env-back{background:#e9dcc4;box-shadow:0 18px 40px rgba(0,0,0,.45)}
+.env-front{
+  background:
+    linear-gradient(to top right,#f4ead6 49.6%,transparent 50%) left/50.5% 100% no-repeat,
+    linear-gradient(to top left,#f1e6d0 49.6%,transparent 50%) right/50.5% 100% no-repeat;
+  z-index:3;
+}
+.env-front::after{
+  content:"";position:absolute;left:0;right:0;bottom:0;height:62%;
+  background:#f7eedd;clip-path:polygon(0 100%,50% 15%,100% 100%);
+}
+.letter-peek{
+  position:absolute;left:7%;right:7%;top:8%;bottom:6%;background:var(--paper);border-radius:4px;z-index:2;
+  transition:transform .8s ease .45s;
+  display:flex;align-items:flex-start;justify-content:center;padding-top:8%;
+  font-family:"Dancing Script",cursive;color:var(--rose);font-size:min(7vw,28px);
+}
+.opened .letter-peek{transform:translateY(-70%)}
+.flap{
+  position:absolute;left:0;right:0;top:0;height:58%;z-index:4;transform-origin:top center;
+  background:#efe2c9;clip-path:polygon(0 0,100% 0,50% 100%);
+  transition:transform .6s ease,z-index 0s linear .3s;
+  filter:drop-shadow(0 2px 2px rgba(0,0,0,.15));
+}
+.opened .flap{transform:rotateX(180deg);z-index:1}
+.seal{
+  position:absolute;left:50%;top:58%;width:22%;aspect-ratio:1;transform:translate(-50%,-50%);z-index:5;
+  border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#d2465f,var(--wax) 55%,#5e0a1c);
+  box-shadow:0 2px 6px rgba(0,0,0,.35),inset 0 0 0 4px rgba(0,0,0,.12);
+  display:flex;align-items:center;justify-content:center;
+  transition:opacity .3s,transform .3s;
+}
+.seal svg{width:46%;fill:none;stroke:rgba(255,220,220,.75);stroke-width:2}
+.opened .seal{opacity:0;transform:translate(-50%,-50%) scale(1.4)}
+.tap{color:var(--ui);font-style:italic;font-size:1.15rem;opacity:.8;animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.4}}
 
-/* cover */
-.cover{
+/* ===== Lá thư ===== */
+.letter-wrap{
+  padding:calc(env(safe-area-inset-top,0px) + 28px) 16px calc(env(safe-area-inset-bottom,0px) + 40px);
+  display:flex;flex-direction:column;align-items:center;gap:28px;
+  opacity:0;transform:translateY(40px);transition:opacity 1s ease 1.2s,transform 1s ease 1.2s;
+}
+.sealed .letter-wrap{display:none}
+.opened .letter-wrap{opacity:1;transform:none}
+.card{
+  width:100%;max-width:520px;background:var(--paper);border-radius:6px;
+  box-shadow:inset 0 0 0 1px var(--paper-edge),0 16px 40px rgba(0,0,0,.4);
+  padding:36px 28px 32px;font-size:19px;line-height:1.65;
+}
+h1{
+  font-family:"Dancing Script",cursive;font-weight:700;color:var(--rose);
+  font-size:3rem;line-height:1.1;margin:0 0 .5em;text-align:center;
+}
+.card p{margin:0 0 .9em}
+.card p:last-child{margin-bottom:0}
+.sub-h{font-family:"Dancing Script",cursive;font-weight:700;color:var(--rose);font-size:2.1rem;line-height:1.15;margin:0 0 .6em;text-align:center}
+.promises{margin:0;padding:0;list-style:none;counter-reset:pr}
+.promises li{position:relative;padding-left:2.1em;margin-bottom:1em;counter-increment:pr}
+.promises li:last-child{margin-bottom:0}
+.promises li::before{
+  content:counter(pr);position:absolute;left:0;top:.15em;width:1.5em;height:1.5em;border-radius:50%;
+  background:var(--rose);color:#fff;font-size:.8em;line-height:1.5em;text-align:center;font-weight:600;
+}
+.promises b{color:var(--rose);font-weight:600}
+.sign{font-family:"Dancing Script",cursive;font-size:1.6em;color:var(--rose);text-align:right;margin-top:.4em!important}
+
+.counter{
+  width:100%;max-width:520px;text-align:center;color:var(--gold);
+  border:1px solid rgba(214,180,106,.45);outline:1px solid rgba(214,180,106,.2);outline-offset:5px;
+  border-radius:4px;padding:26px 16px;
   background:
     repeating-linear-gradient(45deg,rgba(255,255,255,.025) 0 2px,transparent 2px 4px),
-    repeating-linear-gradient(-45deg,rgba(0,0,0,.05) 0 2px,transparent 2px 4px),
-    linear-gradient(to right,rgba(0,0,0,.35),rgba(0,0,0,0) 7%),
-    var(--cover);
-  color:var(--gold);
+    var(--green);
 }
-.cover.back{background:
-    repeating-linear-gradient(45deg,rgba(255,255,255,.025) 0 2px,transparent 2px 4px),
-    repeating-linear-gradient(-45deg,rgba(0,0,0,.05) 0 2px,transparent 2px 4px),
-    linear-gradient(to left,rgba(0,0,0,.35),rgba(0,0,0,0) 7%),
-    var(--cover)}
-.frame{
-  position:absolute;inset:calc(var(--pw)*.06);
-  border:1px solid rgba(214,180,106,.7);outline:1px solid rgba(214,180,106,.35);outline-offset:5px;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
-  font-size:var(--fs);padding:1em;
-}
-.cover h1{
-  font-family:"Dancing Script",cursive;font-weight:700;margin:.2em 0 .1em;
-  font-size:3.4em;line-height:1;color:var(--gold);
-  text-shadow:0 1px 0 rgba(0,0,0,.4),0 -1px 0 rgba(255,240,200,.15);
-}
-.cover .sub{font-style:italic;font-size:1.15em;opacity:.9;margin:0}
-.sprig{width:38%;height:auto;margin:.6em 0}
-.hint{margin-top:2.2em;font-size:.8em;letter-spacing:.04em;opacity:.7}
+.counter .lbl{font-style:italic;font-size:1.15rem;opacity:.9}
+.nums{display:flex;justify-content:center;gap:clamp(10px,4vw,26px);margin:14px 0 6px}
+.nums div{display:flex;flex-direction:column;align-items:center;min-width:52px}
+.nums b{font-family:"Cormorant Garamond",serif;font-weight:600;font-size:clamp(2.1rem,10vw,2.8rem);line-height:1;font-variant-numeric:tabular-nums}
+.nums b.days{color:#f0d391}
+.nums small{font-size:.9rem;opacity:.75;margin-top:4px}
+.since{font-size:.95rem;opacity:.7}
 
-/* question */
-.choices{display:flex;flex-direction:column;gap:.6em;margin-top:1.2em;align-items:center}
-.choices button{
-  font:inherit;font-size:1em;cursor:pointer;border-radius:999px;padding:.45em 1.4em;min-width:70%;
-  border:1.5px solid var(--rose);background:transparent;color:var(--rose);
-  transition:background .2s,color .2s,transform .15s;
+.kiss{
+  font:inherit;font-size:1.2rem;color:#fff;background:var(--rose);border:0;border-radius:999px;
+  padding:.7em 1.8em;cursor:pointer;box-shadow:0 8px 20px rgba(168,68,90,.4);
+  transition:transform .15s;
 }
-.choices button.yes{background:var(--rose);color:#fff}
-.choices button:hover{transform:translateY(-1px)}
-.choices button:focus-visible,.nav button:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
-.reply{display:none;margin-top:1em;font-family:"Dancing Script",cursive;font-size:1.35em;color:var(--rose);text-align:center}
+.kiss:active{transform:scale(.95)}
+.kiss:focus-visible,.music:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+.foot{color:var(--ui);opacity:.6;font-style:italic;text-align:center;font-size:1rem}
 
-
-/* ảnh */
-.photo-pg{justify-content:center;align-items:center;padding-top:calc(var(--pw)*.1)}
-.polaroid{
-  position:relative;width:86%;background:#fff;padding:5% 5% 0;
-  box-shadow:0 2px 3px rgba(0,0,0,.12),0 8px 18px rgba(60,30,20,.16);
-  transform:rotate(var(--tilt));
-}
-.tape{
-  position:absolute;top:-4%;left:50%;width:34%;height:7%;transform:translateX(-50%) rotate(-3deg);
-  background:rgba(214,190,150,.55);box-shadow:0 1px 1px rgba(0,0,0,.06);
-}
-.photo{position:relative;aspect-ratio:4/5;background:#efe9df;overflow:hidden}
-.photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none}
-.photo.has img{display:block}
-.photo.has .ph{display:none}
-.ph{
-  position:absolute;inset:6%;border:1.5px dashed rgba(168,68,90,.45);border-radius:4px;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.3em;
-  color:var(--rose);font-size:.85em;font-style:italic;cursor:pointer;text-align:center;
-}
-.ph span{font-size:2em;font-style:normal;line-height:1}
-.cap{
-  font-family:"Dancing Script",cursive;color:var(--ink);text-align:center!important;
-  font-size:1.2em;line-height:1.3;margin:.35em 0 .5em!important;min-height:1.3em;
-}
-
-/* nav */
-.nav{
-  display:flex;align-items:center;justify-content:center;gap:1.2rem;
-  padding:.6rem 1rem 1rem;color:var(--ui);font-size:1.05rem;
-}
-.nav button{
+.music{
+  position:fixed;right:16px;bottom:calc(env(safe-area-inset-bottom,0px) + 16px);z-index:20;
   width:44px;height:44px;border-radius:50%;border:1px solid rgba(243,230,216,.35);
-  background:rgba(255,255,255,.05);color:var(--ui);font-size:1.4rem;cursor:pointer;line-height:1;
+  background:rgba(28,20,32,.6);color:var(--ui);font-size:1.1rem;cursor:pointer;
+  backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);display:none;
 }
-.nav button:disabled{opacity:.25;cursor:default}
-.nav span{min-width:9em;text-align:center;font-style:italic;opacity:.85}
-@media (max-width:719px){
-  .nav{padding:.3rem 1rem .5rem;gap:1.6rem}
-  .pg{padding:calc(var(--ph)*.075) calc(var(--pw)*.09) calc(var(--ph)*.045)}
-  .polaroid{width:88%}
-}
+.opened .music{display:block}
+.music.off{opacity:.45;text-decoration:line-through}
 
-/* cánh hoa hồng */
-.petal{
-  position:fixed;top:-10vh;left:0;pointer-events:none;z-index:999;will-change:transform;
-  animation:fall var(--d) linear var(--delay) forwards;
-}
+/* cánh hoa & tim */
+.petal{position:fixed;top:-10vh;left:0;pointer-events:none;z-index:999;will-change:transform;animation:fall var(--d) linear var(--delay) forwards}
 .petal i{
-  display:block;width:var(--s);height:calc(var(--s)*1.2);
-  border-radius:0 75% 60% 75%;
+  display:block;width:var(--s);height:calc(var(--s)*1.2);border-radius:0 75% 60% 75%;
   background:radial-gradient(ellipse at 35% 30%,var(--hi) 0%,var(--c) 55%,var(--lo) 100%);
   box-shadow:inset -1px -2px 3px rgba(60,0,10,.35);
-  opacity:.95;
   animation:sway var(--sw) ease-in-out infinite alternate;
 }
-@keyframes fall{
-  from{transform:translate3d(var(--x),0,0)}
-  to{transform:translate3d(calc(var(--x) + var(--dx)),120vh,0)}
-}
+@keyframes fall{from{transform:translate3d(var(--x),0,0)}to{transform:translate3d(calc(var(--x) + var(--dx)),120vh,0)}}
 @keyframes sway{
-  from{transform:rotate(var(--r0)) rotateX(0deg) rotateY(0deg) translateX(-12px)}
+  from{transform:rotate(var(--r0)) rotateX(0) rotateY(0) translateX(-12px)}
   to{transform:rotate(calc(var(--r0) + 140deg)) rotateX(65deg) rotateY(55deg) translateX(12px)}
 }
-.nav .music{font-size:1.05rem}
-.nav .music.off{opacity:.45;text-decoration:line-through}
+.heart{
+  position:fixed;pointer-events:none;z-index:999;color:#e24b6b;font-size:var(--s);
+  animation:rise 1.8s ease-out forwards;text-shadow:0 2px 6px rgba(0,0,0,.25);
+}
+@keyframes rise{
+  0%{transform:translate(-50%,-50%) scale(.3);opacity:0}
+  15%{opacity:1}
+  100%{transform:translate(calc(-50% + var(--dx)),calc(-50% - var(--dy))) scale(1.1) rotate(var(--rot));opacity:0}
+}
 @media (prefers-reduced-motion: reduce){
-  .leaf,.book{transition-duration:.01s}
-  .petal{display:none}
+  .envelope,.tap{animation:none}
+  .petal,.heart{display:none}
 }
 </style>
 </head>
-<body>
+<body class="sealed">
 
-<div class="stage" id="stage">
-  <div class="book" id="book">
-
-    <!-- Lá 1: bìa / lời đề tặng -->
-    <div class="leaf">
-      <div class="face front cover">
-        <div class="frame">
-          <p class="sub">những điều anh chưa từng nói</p>
-          <svg class="sprig" viewBox="0 0 120 60" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round">
-            <path d="M10 50 C40 40 70 28 110 10"/>
-            <path d="M35 42 C30 30 38 22 46 20 C46 30 42 38 35 42Z"/>
-            <path d="M55 34 C58 22 68 18 76 20 C72 30 64 34 55 34Z"/>
-            <path d="M78 24 C76 14 84 6 92 6 C92 14 86 22 78 24Z"/>
-            <circle cx="110" cy="10" r="3"/>
-          </svg>
-          <h1>Gửi <span class="ten-em">em</span></h1>
-          <p class="hint">chạm hoặc vuốt để lật trang</p>
-        </div>
-      </div>
-      <div class="face back paper">
-        <div class="pg center">
-          <p>Cuốn sách này chỉ có một người đọc.</p>
-          <p>Nếu em đang lật những trang này, nghĩa là cuối cùng anh cũng đủ can đảm để trao nó cho em.</p>
-          <p style="margin-top:1.5em;font-style:italic;opacity:.75">Đọc chậm thôi nhé.</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Lá 2 -->
-    <div class="leaf">
-      <div class="face front paper">
-        <div class="pg">
-          <h2>Ngày đầu tiên</h2>
-          <p>Anh vẫn nhớ lần đầu gặp em. Không có gì đặc biệt cả, một buổi chiều bình thường, một câu chào bình thường.</p>
-          <p>Vậy mà tối hôm đó về nhà, anh cứ nghĩ mãi về nụ cười của em. Anh không biết lúc ấy mình đã bắt đầu thương em. Anh chỉ biết từ hôm đó, những buổi chiều bình thường bỗng trở nên đáng mong chờ.</p>
-          <span class="num">1</span>
-        </div>
-      </div>
-      <div class="face back paper">
-        <div class="pg photo-pg">
-          <div class="polaroid" style="--tilt:-2.5deg">
-            <span class="tape"></span>
-            <div class="photo" data-i="0">
-              <img alt="">
-              <div class="ph"><span>＋</span>Chạm để chọn ảnh</div>
-            </div>
-            <p class="cap"></p>
-          </div>
-          <span class="num">2</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Lá 3 -->
-    <div class="leaf">
-      <div class="face front paper">
-        <div class="pg">
-          <h2>Những điều nhỏ bé</h2>
-          <p>Anh để ý về em nhiều hơn em nghĩ. Cách em nhíu mày khi tập trung. Cách em bật cười trước cả khi kể xong một chuyện buồn cười. Cách em luôn hỏi han người khác, dù chính mình đang mệt.</p>
-          <p>Người ta gọi đó là những điều nhỏ bé. Với anh, đó là lý do để thương em thêm một chút mỗi ngày.</p>
-          <span class="num">3</span>
-        </div>
-      </div>
-      <div class="face back paper">
-        <div class="pg photo-pg">
-          <div class="polaroid" style="--tilt:2deg">
-            <span class="tape"></span>
-            <div class="photo" data-i="1">
-              <img alt="">
-              <div class="ph"><span>＋</span>Chạm để chọn ảnh</div>
-            </div>
-            <p class="cap"></p>
-          </div>
-          <span class="num">4</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Lá 4 -->
-    <div class="leaf">
-      <div class="face front paper">
-        <div class="pg">
-          <h2>Anh đã từng sợ</h2>
-          <p>Anh sợ nói ra rồi mình sẽ không còn được như trước. Sợ em khó xử. Sợ mất những cuộc trò chuyện mà anh trân quý.</p>
-          <p>Nên anh đã im lặng rất lâu. Rồi anh nhận ra, giữ mãi một điều thật lòng trong tim cũng là chưa thành thật với em. Và em xứng đáng được biết.</p>
-          <span class="num">5</span>
-        </div>
-      </div>
-      <div class="face back paper">
-        <div class="pg">
-          <h2>Vì sao là em</h2>
-          <p>Không phải vì em hoàn hảo. Mà vì ở cạnh em, anh được là chính mình, không cần cố tỏ ra giỏi giang hay mạnh mẽ.</p>
-          <p>Em làm những ngày mệt mỏi nhẹ đi, làm những ngày vui thêm vui. Anh đã gặp nhiều người, nhưng chỉ có em khiến anh muốn đi cùng thật lâu.</p>
-          <span class="num">6</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Lá 5 -->
-    <div class="leaf">
-      <div class="face front paper">
-        <div class="pg photo-pg">
-          <div class="polaroid" style="--tilt:-1.5deg">
-            <span class="tape"></span>
-            <div class="photo" data-i="2">
-              <img alt="">
-              <div class="ph"><span>＋</span>Chạm để chọn ảnh</div>
-            </div>
-            <p class="cap"></p>
-          </div>
-          <span class="num">11</span>
-        </div>
-      </div>
-      <div class="face back paper">
-        <div class="pg">
-          <h2>Một lời hứa</h2>
-          <p>Anh không hứa những điều lớn lao.</p>
-          <p>Anh chỉ hứa sẽ lắng nghe em, cả khi em không nói ra. Sẽ tôn trọng em, cả khi mình không cùng ý kiến. Sẽ ở đó vào những ngày em cần một bờ vai, và cả những ngày em chỉ cần ai đó ngồi yên bên cạnh.</p>
-          <span class="num">8</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Lá 6 -->
-    <div class="leaf">
-      <div class="face front paper">
-        <div class="pg center">
-          <p>Sau tất cả những trang này, anh chỉ muốn nói thật đơn giản:</p>
-          <div class="big">Anh thương em.</div>
-          <p>Không phải thoáng qua, không phải nhất thời. Là thương thật lòng.</p>
-          <p class="sign">— <span class="ten-anh">Anh</span></p>
-          <span class="num">9</span>
-        </div>
-      </div>
-      <div class="face back paper">
-        <div class="pg photo-pg">
-          <div class="polaroid" style="--tilt:2.5deg">
-            <span class="tape"></span>
-            <div class="photo" data-i="3">
-              <img alt="">
-              <div class="ph"><span>＋</span>Chạm để chọn ảnh</div>
-            </div>
-            <p class="cap"></p>
-          </div>
-          <span class="num">10</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Lá 5: câu hỏi / bìa sau -->
-    <div class="leaf">
-      <div class="face front paper">
-        <div class="pg center">
-          <h2 style="margin-bottom:.4em">Vậy thì…</h2>
-          <p style="font-size:1.2em">Em có muốn làm người yêu anh không?</p>
-          <div class="choices" id="choices">
-            <button class="yes" id="btnYes">Em đồng ý ♥</button>
-          </div>
-          <div class="reply" id="reply"></div>
-          <p style="margin-top:1.4em;font-size:.85em;font-style:italic;opacity:.7">Trang này chỉ có một đáp án thôi nhé.</p>
-          <span class="num">11</span>
-        </div>
-      </div>
-      <div class="face back cover">
-        <div class="frame">
-          <svg class="sprig" viewBox="0 0 120 60" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" style="width:28%">
-            <path d="M60 52 C52 40 38 36 38 24 C38 16 46 12 52 14 C56 15 59 18 60 22 C61 18 64 15 68 14 C74 12 82 16 82 24 C82 36 68 40 60 52Z"/>
-          </svg>
-          <p class="sub">Hết.<br>Hoặc là bắt đầu.</p>
-        </div>
-      </div>
-    </div>
-
+<div class="envelope-scene" id="scene">
+  <div class="envelope" id="envelope" role="button" aria-label="Mở thư" tabindex="0">
+    <div class="env-back"></div>
+    <div class="letter-peek">Cảm ơn em</div>
+    <div class="env-front"></div>
+    <div class="flap"></div>
+    <div class="seal"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg></div>
   </div>
+  <div class="tap">Gửi <span class="ten-em">em</span> · chạm để mở thư</div>
 </div>
 
-<div class="nav">
-  <button id="prev" aria-label="Trang trước">‹</button>
-  <span id="label">Bìa</span>
-  <button id="next" aria-label="Trang sau">›</button>
-  <button id="music" class="music" aria-label="Bật/tắt nhạc">♫</button>
-</div>
+<main class="letter-wrap">
+  <article class="card">
+    <h1>Cảm ơn em</h1>
+    <p>Cảm ơn em đã đọc hết cuốn sách nhỏ ấy, và cảm ơn em đã nói “có”.</p>
+    <p>Mình mới bắt đầu được một tiếng thôi, nên anh biết em vẫn còn đang hồi hộp, có khi còn chút lo lắng. Điều đó hoàn toàn bình thường. Em không cần tin anh ngay lập tức đâu.</p>
+    <p>Anh không mong em tin vì những lời hay. Anh mong em tin vì những gì anh làm, từng ngày một, kể từ hôm nay.</p>
+  </article>
+
+  <article class="card">
+    <h2 class="sub-h">Những điều anh sẽ cố gắng</h2>
+    <ol class="promises">
+      <li><b>Anh sẽ thật lòng với em.</b> Có chuyện gì anh sẽ nói thẳng, kể cả khi chuyện đó không dễ nghe. Em sẽ không phải đoán anh đang nghĩ gì.</li>
+      <li><b>Anh sẽ giữ lời.</b> Hứa gọi là sẽ gọi, hẹn đến là sẽ đến. Nếu lỡ không làm được, anh sẽ báo em trước và tự nhận lỗi, không viện cớ.</li>
+      <li><b>Anh sẽ tôn trọng em.</b> Em vẫn là em, với bạn bè, gia đình, công việc và những khoảng riêng của em. Anh ở bên để cùng em, không phải để giữ em.</li>
+      <li><b>Anh sẽ lắng nghe.</b> Khi em buồn, anh sẽ hỏi em cần một lời khuyên hay chỉ cần một người ngồi nghe.</li>
+      <li><b>Khi giận, anh sẽ không im lặng bỏ đi.</b> Mình có thể cần chút thời gian, nhưng anh sẽ luôn quay lại để nói chuyện cho đến khi hiểu nhau.</li>
+      <li><b>Anh sẽ không làm em phải bất an.</b> Em sẽ không phải lo anh đang ở đâu, nhắn với ai. Những gì của anh, em đều có thể biết.</li>
+    </ol>
+  </article>
+
+  <article class="card">
+    <p>Anh không hoàn hảo. Sẽ có lúc anh vụng về, có lúc anh sai. Nhưng anh hứa sẽ không bao giờ sai mà giả vờ như mình đúng.</p>
+    <p>Nếu một ngày em thấy anh làm khác với những gì đã viết ở đây, em cứ mở lại trang này và nhắc anh. Anh sẽ nghe.</p>
+    <p>Em không cần trả lời gì cả. Chỉ cần em cứ là em, còn phần chứng minh, để anh lo.</p>
+    <p>Cảm ơn em đã chọn anh. Anh sẽ cố gắng để em luôn thấy lựa chọn ấy là đúng.</p>
+    <p class="sign">— <span class="ten-anh">Anh</span></p>
+  </article>
+
+
+  <section class="counter">
+    <div class="lbl">Chúng mình đã bên nhau được</div>
+    <div class="nums">
+      <div><b class="days" id="d">0</b><small>ngày</small></div>
+      <div><b id="h">00</b><small>giờ</small></div>
+      <div><b id="m">00</b><small>phút</small></div>
+      <div><b id="s">00</b><small>giây</small></div>
+    </div>
+    <div class="since" id="since"></div>
+  </section>
+
+  <button class="kiss" id="kiss">Gửi em một nụ hôn ♥</button>
+  <p class="foot">Đây mới là trang đầu tiên. Mình viết tiếp cùng nhau nhé.</p>
+</main>
+
+<button class="music" id="music" aria-label="Bật/tắt nhạc">♫</button>
 
 <script>
-/* ✎ Sửa tên ở đây */
-const TEN_EM  = "em";   // ví dụ: "Linh"
-const TEN_ANH = "Anh";  // ví dụ: "Minh"
+/* ================= ✎ CHỈNH Ở ĐÂY ================= */
+const TEN_EM   = "em";                       // ví dụ: "Linh"
+const TEN_ANH  = "Anh";                      // ví dụ: "Minh"
+const NGAY_YEU = "2026-10-09T00:05:00+07:00"; // giờ em đồng ý (năm-tháng-ngàyTgiờ:phút:giây)
+const MUSIC    = "nhac.mp3";                 // nhạc, đặt cùng thư mục (không có thì tự chơi hộp nhạc)
+/* ================================================== */
 
 document.querySelectorAll(".ten-em").forEach(e => e.textContent = TEN_EM);
 document.querySelectorAll(".ten-anh").forEach(e => e.textContent = TEN_ANH);
 
-
-/* ✎ Ảnh: đặt file ảnh cùng thư mục với file HTML này, rồi ghi tên file + chú thích */
-const PHOTOS = [
-  { src: "img/111.jpg", caption: "Lần đầu mình gặp nhau" },
-  { src: "img/222.jpg", caption: "Khoảnh khắc nào cũng đáng trân trọng" },
-  { src: "img/333.jpg", caption: "Một ngày bình thường có em" },
-  { src: "img/444.jpg", caption: "Và anh mong còn nhiều ngày nữa" },
-];
-document.querySelectorAll(".photo").forEach(box => {
-  const i = +box.dataset.i, cfg = PHOTOS[i] || {};
-  const img = box.querySelector("img");
-  box.parentElement.querySelector(".cap").textContent = cfg.caption || "";
-  img.onload = () => box.classList.add("has");
-  img.onerror = () => box.classList.remove("has");
-  if (cfg.src) img.src = cfg.src;
-  // chưa có ảnh: chạm để chọn ảnh từ máy (chỉ để xem thử, không lưu lại)
-  box.querySelector(".ph").addEventListener("click", e => {
-    e.stopPropagation();
-    const inp = document.createElement("input");
-    inp.type = "file"; inp.accept = "image/*";
-    inp.onchange = () => { if (inp.files[0]) img.src = URL.createObjectURL(inp.files[0]); };
-    inp.click();
-  });
-});
-
-const book = document.getElementById("book");
-const leaves = [...document.querySelectorAll(".leaf")];
-const N = leaves.length;
-const LAST = N * 2 - 1;          // trang cuối (bìa sau)
-let p = 0;                        // vị trí trang tuyến tính: chẵn = bên phải, lẻ = bên trái
-let mobile = false, pw = 400;
-
-function layout(){
-  const stage = document.getElementById("stage");
-  const vw = innerWidth;
-  const availH = stage.clientHeight - 20;   // chiều cao thực còn lại (đã trừ thanh điều hướng, tai thỏ)
-  mobile = vw < 720 || vw / innerHeight < 1;
-  let ph, fs;
-  if (mobile){
-    // màn hình dọc điện thoại: trang rộng gần hết màn hình, cao hơn tỉ lệ sách thường
-    pw = Math.min(vw * 0.9, 440, availH / 1.3);
-    ph = Math.min(availH, pw * 1.62);
-    fs = Math.max(15, Math.min(pw * 0.05, ph * 0.031));
-  } else {
-    pw = Math.min((vw - 80) / 2, availH / 1.42, 470);
-    ph = pw * 1.42;
-    fs = pw * 0.044;
-  }
-  document.documentElement.style.setProperty("--pw", pw + "px");
-  document.documentElement.style.setProperty("--ph", ph + "px");
-  document.documentElement.style.setProperty("--fs", fs + "px");
-  if (!mobile && p > 0 && p % 2 === 0) p -= 1;   // desktop luôn ở trang lẻ (trải đôi)
-  render(false);
-}
-
-function render(animate = true){
-  const flipped = Math.floor((p + 1) / 2);
-  leaves.forEach((leaf, i) => {
-    const should = i < flipped;
-    if (leaf.classList.contains("flipped") !== should && animate){
-      leaf.style.zIndex = 100;
-      setTimeout(() => leaf.style.zIndex = should ? i + 1 : N - i, 900);
-    } else {
-      leaf.style.zIndex = should ? i + 1 : N - i;
-    }
-    leaf.classList.toggle("flipped", should);
-  });
-
-  let shift = 0;
-  if (mobile) shift = (p % 2 === 0) ? -pw / 2 : pw / 2;
-  else if (p === 0) shift = -pw / 2;
-  else if (p === LAST) shift = pw / 2;
-  book.style.transform = `translateX(${shift}px)`;
-
-  const lbl = document.getElementById("label");
-  if (p === 0) lbl.textContent = "Bìa";
-  else if (p === LAST) lbl.textContent = "Bìa sau";
-  else if (p === 1) lbl.textContent = mobile ? "Lời mở đầu" : "Lời mở đầu · trang 1";
-  else lbl.textContent = mobile ? `Trang ${p - 1}` : `Trang ${p - 1} – ${p}`;
-
-  document.getElementById("prev").disabled = p === 0;
-  document.getElementById("next").disabled = p === LAST;
-}
-
-function go(np){
-  const old = p; p = np; render();
-  if (old === 0 && p > 0){          // mở sách
-    startMusic();
-    petals(140);
-  }
-  if (p === LAST && old !== LAST) setTimeout(() => petals(140), 500);  // đóng sách (bìa sau)
-  if (p === 0 && old > 0) setTimeout(() => petals(100), 500);         // gập lại về bìa trước
-}
-function next(){
-  if (p >= LAST) return;
-  go(mobile ? p + 1 : (p === 0 ? 1 : Math.min(p + 2, LAST)));
-}
-function prev(){
-  if (p <= 0) return;
-  go(mobile ? p - 1 : (p <= 1 ? 0 : p - 2));
-}
-
-document.getElementById("next").onclick = next;
-document.getElementById("prev").onclick = prev;
-document.getElementById("stage").addEventListener("click", e => {
-  if (e.target.closest("button")) return;
-  const r = book.getBoundingClientRect();
-  if (e.clientX < r.left || e.clientX > r.right) return;
-  (e.clientX > innerWidth / 2) ? next() : prev();
-});
-addEventListener("keydown", e => {
-  if (e.key === "ArrowRight") next();
-  if (e.key === "ArrowLeft") prev();
-});
-let sx = null;
-addEventListener("touchstart", e => sx = e.touches[0].clientX, {passive:true});
-addEventListener("touchend", e => {
-  if (sx === null) return;
-  const dx = e.changedTouches[0].clientX - sx;
-  if (Math.abs(dx) > 50){ dx < 0 ? next() : prev(); }
-  sx = null;
-});
-// chặn click-lật khi vừa vuốt
-document.getElementById("stage").addEventListener("touchend", e => {
-  if (sx !== null && Math.abs(e.changedTouches[0].clientX - sx) > 50) e.preventDefault();
-});
-
-/* câu trả lời: mặc định đồng ý */
-const reply = document.getElementById("reply");
-document.getElementById("btnYes").onclick = e => {
-  e.stopPropagation();
-  document.getElementById("choices").style.display = "none";
-  reply.style.display = "block";
-  reply.textContent = "Anh là người hạnh phúc nhất hôm nay. Cảm ơn em ♥";
+/* mở thư */
+let opened = false;
+function openLetter(){
+  if (opened) return;
+  opened = true;
   startMusic();
-  petals(160);
-};
+  document.body.classList.add("opened");
+  setTimeout(() => { document.body.classList.remove("sealed"); scrollTo(0,0); }, 900);
+  setTimeout(() => petals(150), 500);
+}
+const env = document.getElementById("envelope");
+env.addEventListener("click", openLetter);
+env.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openLetter(); } });
+document.getElementById("scene").addEventListener("click", openLetter);
+
+/* đếm thời gian bên nhau */
+const start = new Date(NGAY_YEU);
+document.getElementById("since").textContent =
+  "kể từ " + start.toLocaleDateString("vi-VN", { day:"numeric", month:"long", year:"numeric" });
+const pad = n => String(n).padStart(2, "0");
+function tick(){
+  let diff = Math.max(0, Date.now() - start.getTime()) / 1000 | 0;
+  const d = diff / 86400 | 0; diff %= 86400;
+  document.getElementById("d").textContent = d;
+  document.getElementById("h").textContent = pad(diff / 3600 | 0);
+  document.getElementById("m").textContent = pad((diff % 3600) / 60 | 0);
+  document.getElementById("s").textContent = pad(diff % 60);
+}
+tick(); setInterval(tick, 1000);
+
+/* nụ hôn: tim bay lên */
+document.getElementById("kiss").addEventListener("click", e => {
+  const r = e.currentTarget.getBoundingClientRect();
+  const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+  for (let i = 0; i < 18; i++){
+    const h = document.createElement("span"); h.className = "heart"; h.textContent = "♥";
+    h.style.left = cx + "px"; h.style.top = cy + "px";
+    h.style.setProperty("--s", 16 + Math.random() * 22 + "px");
+    h.style.setProperty("--dx", (Math.random() * 240 - 120) + "px");
+    h.style.setProperty("--dy", 120 + Math.random() * 260 + "px");
+    h.style.setProperty("--rot", (Math.random() * 60 - 30) + "deg");
+    h.style.animationDelay = Math.random() * .3 + "s";
+    document.body.appendChild(h);
+    setTimeout(() => h.remove(), 2300);
+  }
+  if (navigator.vibrate) navigator.vibrate(30);
+});
 
 /* mưa cánh hoa hồng */
 const PETAL_COLORS = [
-  ["#ff8fa6","#c8183a","#6e0a1e"],
-  ["#ffa3b5","#d93a5c","#7a1027"],
-  ["#ff7a92","#b3102f","#5a0717"],
-  ["#ffc2cf","#e5627e","#8c1d36"],
+  ["#ff8fa6","#c8183a","#6e0a1e"], ["#ffa3b5","#d93a5c","#7a1027"],
+  ["#ff7a92","#b3102f","#5a0717"], ["#ffc2cf","#e5627e","#8c1d36"],
 ];
 function petals(count = 120){
   if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
@@ -552,52 +318,42 @@ function petals(count = 120){
   document.body.appendChild(frag);
 }
 
-/* ✎ Nhạc: đặt file nhạc (mp3) cùng thư mục và ghi tên vào đây.
-   Không có file thì sách tự chơi một giai điệu hộp nhạc nhẹ nhàng. */
-const MUSIC = "nhac.mp3";
-
+/* nhạc */
 let musicStarted = false, musicOn = true, audioEl = null, actx = null, master = null, synthOn = false;
 function startMusic(){
   if (musicStarted) return;
   musicStarted = true;
-  // tạo AudioContext ngay trong lần chạm (iPhone yêu cầu)
-  try {
-    actx = new (window.AudioContext || window.webkitAudioContext)();
-    actx.resume();
-  } catch(e){}
+  try { actx = new (window.AudioContext || window.webkitAudioContext)(); actx.resume(); } catch(e){}
   audioEl = new Audio(MUSIC);
   audioEl.loop = true; audioEl.volume = 0.7;
   audioEl.addEventListener("error", startSynth);
   const pr = audioEl.play();
-  if (pr) pr.catch(() => { if (!audioEl.error) return; startSynth(); });
+  if (pr) pr.catch(() => { if (audioEl.error) startSynth(); });
 }
-
-/* giai điệu hộp nhạc tự sáng tác: C – Am – F – G */
+/* giai điệu hộp nhạc tự sáng tác: F – C – Dm – Bb */
 const NOTE = n => 440 * Math.pow(2, (n - 69) / 12);
 const CHORDS = [
-  [48,55,60,64,67,64,60,55], [45,52,57,60,64,60,57,52],
-  [41,48,53,57,60,57,53,48], [43,50,55,59,62,59,55,50],
+  [41,48,53,57,60,57,53,48], [36,43,48,52,55,52,48,43],
+  [38,45,50,53,57,53,50,45], [34,41,46,50,53,50,46,41],
 ];
 const MELODY = [
-  [76,null,79,null,77,76,74,null], [72,null,76,null,74,72,71,null],
-  [69,null,72,null,74,72,69,null], [71,null,74,null,79,null,77,74],
-  [76,null,79,null,81,79,77,null], [76,null,72,null,74,76,72,null],
-  [69,null,72,null,77,76,74,null], [74,null,71,null,72,null,null,null],
+  [72,null,77,null,76,74,72,null], [72,null,76,null,79,null,76,null],
+  [74,null,77,null,81,79,77,null], [74,null,77,null,76,null,74,null],
+  [72,null,77,null,79,81,79,null], [76,null,79,null,84,null,79,null],
+  [77,null,74,null,76,77,74,null], [72,null,74,null,77,null,null,null],
 ];
 function startSynth(){
   if (synthOn || !actx) return;
   synthOn = true;
   master = actx.createGain(); master.gain.value = musicOn ? 0.22 : 0;
-  const delay = actx.createDelay(); delay.delayTime.value = 0.32;
+  const delay = actx.createDelay(); delay.delayTime.value = 0.34;
   const fb = actx.createGain(); fb.gain.value = 0.28;
   delay.connect(fb); fb.connect(delay);
   master.connect(actx.destination); master.connect(delay); delay.connect(actx.destination);
-  const step = 0.34; let t = actx.currentTime + 0.1, bar = 0;
+  const step = 0.36; let t = actx.currentTime + 0.1, bar = 0;
   function bell(midi, when, vol){
-    const o = actx.createOscillator(), o2 = actx.createOscillator(), g = actx.createGain();
-    o.type = "sine"; o2.type = "sine";
-    o.frequency.value = NOTE(midi); o2.frequency.value = NOTE(midi) * 4.01;
-    const g2 = actx.createGain(); g2.gain.value = 0.08;
+    const o = actx.createOscillator(), o2 = actx.createOscillator(), g = actx.createGain(), g2 = actx.createGain();
+    o.frequency.value = NOTE(midi); o2.frequency.value = NOTE(midi) * 4.01; g2.gain.value = 0.08;
     o.connect(g); o2.connect(g2); g2.connect(g); g.connect(master);
     g.gain.setValueAtTime(0.0001, when);
     g.gain.exponentialRampToValueAtTime(vol, when + 0.008);
@@ -616,12 +372,9 @@ function startSynth(){
     setTimeout(schedule, 500);
   })();
 }
-
 const musicBtn = document.getElementById("music");
-musicBtn.onclick = e => {
-  e.stopPropagation();
-  if (!musicStarted){ startMusic(); musicOn = true; }
-  else musicOn = !musicOn;
+musicBtn.onclick = () => {
+  if (!musicStarted){ startMusic(); musicOn = true; } else musicOn = !musicOn;
   if (audioEl) audioEl.muted = !musicOn;
   if (master) master.gain.value = musicOn ? 0.22 : 0;
   if (actx && musicOn) actx.resume();
@@ -632,12 +385,6 @@ document.addEventListener("visibilitychange", () => {
   document.hidden ? actx.suspend() : (musicOn && actx.resume());
   if (audioEl && !audioEl.error) document.hidden ? audioEl.pause() : (musicOn && audioEl.play().catch(()=>{}));
 });
-
-addEventListener("resize", layout);
-addEventListener("orientationchange", () => setTimeout(layout, 300));
-if (window.visualViewport) visualViewport.addEventListener("resize", layout);
-document.fonts && document.fonts.ready.then(layout);
-layout();
 </script>
 </body>
 </html>
